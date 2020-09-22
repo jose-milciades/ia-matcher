@@ -365,7 +365,8 @@ public class Cotejar {
 
 				if (fin > texto.length() || parametrosEntidadVO.getLongitud() == 0) {
 					fin = texto.length();
-				}
+				} 
+				
 
 				parrafo = texto.substring(inicio, fin).trim();
 			}
