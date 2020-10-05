@@ -14,11 +14,29 @@ public class EntidadVO implements Serializable{
 	
 	private String entidad;
 	private String codigo;
+	private String codigoConyuge;
 	private String valor;
 	private String codigoServicio;
 	private int confianza;
+	private String origenEntidad;
 	
 	
+
+	public String getCodigoConyuge() {
+		return codigoConyuge;
+	}
+
+	public void setCodigoConyuge(String codigoConyuge) {
+		this.codigoConyuge = codigoConyuge;
+	}
+
+	public String getOrigenEntidad() {
+		return origenEntidad;
+	}
+
+	public void setOrigenEntidad(String origenEntidad) {
+		this.origenEntidad = origenEntidad;
+	}
 
 	public String getCodigoServicio() {
 		return codigoServicio;

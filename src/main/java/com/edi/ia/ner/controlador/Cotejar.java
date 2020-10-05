@@ -76,6 +76,7 @@ public class Cotejar {
 
 		String valorEntidad = null;
 		int fin = -1;
+		int aux = 0;
 		Pattern regex;
 		Matcher match;
 
@@ -86,7 +87,11 @@ public class Cotejar {
 				match = regex.matcher(texto);
 				if (match.find()) {
 					fin = match.end();
-					String frase[] = texto.substring(fin, fin + parametrosEntidadVO.getLongitud()).trim().split(" ");
+					aux = parametrosEntidadVO.getLongitud() + fin;
+					if (aux > texto.length()) {
+						aux = texto.length();
+					}
+					String frase[] = texto.substring(fin, aux).trim().split(" ");
 					if (frase.length > parametrosEntidadVO.getPosicion()) {
 						valorEntidad = frase[parametrosEntidadVO.getPosicion()];
 					}
@@ -298,6 +303,7 @@ public class Cotejar {
 				match = regex.matcher(texto);
 				while (match.find()) {
 					// agregar indices a un mapa ordenado
+					System.out.println("Palabra encontrada: " + match.group(0).trim());
 					mapIndex.put(match.start(), match.group(0).trim());
 				}
 			}
@@ -333,6 +339,12 @@ public class Cotejar {
 			int longitudListaAnterior = -1;
 			for (ArrayList<Integer> indicesProximosAux : listaIndicesProximos) {
 
+				System.out.println("indicesProximosAux: " + indicesProximosAux.size());
+
+				for (Integer tmp : indicesProximosAux) {
+					System.out.println("Palabra: " + mapIndex.get(tmp));
+				}
+
 				if (longitudListaAnterior != -1) {
 					if (indicesProximosAux.size() > longitudListaAnterior) {
 						listaIndicesProximosMayor = indicesProximosAux;
@@ -365,8 +377,7 @@ public class Cotejar {
 
 				if (fin > texto.length() || parametrosEntidadVO.getLongitud() == 0) {
 					fin = texto.length();
-				} 
-				
+				}
 
 				parrafo = texto.substring(inicio, fin).trim();
 			}
@@ -374,6 +385,24 @@ public class Cotejar {
 
 		return parrafo;
 
+	}
+
+	public int buscarEntidad(String texto, String valorBuscado) {
+
+		int indice = -1;
+		if (valorBuscado != null) {
+			if (valorBuscado != "" && valorBuscado != " ") {
+				valorBuscado = valorBuscado.replaceAll(" ", "|");
+				Pattern regex;
+				Matcher match;
+				regex = Pattern.compile("\\b(?i)(" + valorBuscado + ")\\b", Pattern.CASE_INSENSITIVE);
+				match = regex.matcher(texto);
+				if (match.find()) {
+					indice = match.end();
+				}
+			}
+		}
+		return indice;
 	}
 
 }

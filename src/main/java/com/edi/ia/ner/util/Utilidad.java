@@ -1,9 +1,13 @@
 package com.edi.ia.ner.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.edi.ia.ner.modelo.EntidadVO;
 import com.edi.ia.ner.modelo.ModelosNerVO;
 import com.edi.ia.ner.modelo.ParametrosConfiguracionVO;
 import com.edi.ia.ner.modelo.ParametrosEntidadVO;
@@ -16,8 +20,7 @@ public class Utilidad {
 	    sb.append(e.toString());
         sb.append("\n");
 	    for (StackTraceElement element : e.getStackTrace()) {
-	        sb.append("       "+element.toString());
-	        sb.append("\n");
+	        sb.append("       "+element.toString()); 
 	    }
 	    return sb.toString();
 	}
@@ -25,6 +28,9 @@ public class Utilidad {
 	public String  darFormatoTexto(String texto) {
 		texto = texto.replaceAll("\\n", " ");
 		texto = texto.replaceAll(" +", " ");
+		texto = texto.replaceAll("- -", "-");
+		texto = texto.replaceAll("-+", "-");
+		
 		return texto;
 	}
 	
@@ -55,6 +61,21 @@ public class Utilidad {
 		texto = texto.replaceAll(",", ".");
 		
 		return texto;
+	}
+	
+	public ArrayList<EntidadVO>  asignarCodigoEntidadConyuge(ArrayList<EntidadVO> ListaEntidadVO){
+		
+		List<String> codigosEntidadAcreditado = Arrays.asList(VariablesGlobales.CODIGOS_ENTIDAD_ACREDITADO.split(" "));
+		List<String> codigosEntidadConyuge = Arrays.asList(VariablesGlobales.CODIGOS_ENTIDAD_CONYUGE.split(" "));
+		//Fijar los codigos de las entiddes del conyuge
+		for (EntidadVO entidadVO : ListaEntidadVO) {
+			
+			entidadVO.setCodigoConyuge(codigosEntidadConyuge.get(codigosEntidadAcreditado.indexOf(entidadVO.getCodigo())));
+			entidadVO.setCodigoConyuge(codigosEntidadAcreditado.get(codigosEntidadConyuge.indexOf(entidadVO.getCodigo())));
+		}
+		
+		
+		return ListaEntidadVO;
 	}
 
 }

@@ -10,6 +10,7 @@ public class ParametrosEntidadVO {
 	private int espacioEntrePalabras;
 	private int longitud;
 	private int asiertos;
+	private int cantidadMinimaCaracteres;
 	private String expresionRegular;
 	private String expresionRegularAux;
 	private String expresionRegularValoresIniciales;
@@ -19,6 +20,12 @@ public class ParametrosEntidadVO {
 	
 	
 	
+	public int getCantidadMinimaCaracteres() {
+		return cantidadMinimaCaracteres;
+	}
+	public void setCantidadMinimaCaracteres(int cantidadMinimaCaracteres) {
+		this.cantidadMinimaCaracteres = cantidadMinimaCaracteres;
+	}
 	public String getExpresionRegularValoresIniciales() {
 		return expresionRegularValoresIniciales;
 	}
