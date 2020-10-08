@@ -392,7 +392,16 @@ public class Cotejar {
 		int indice = -1;
 		if (valorBuscado != null) {
 			if (valorBuscado != "" && valorBuscado != " ") {
+				
+				valorBuscado = valorBuscado.replaceAll("de", "");
+				valorBuscado = valorBuscado.replaceAll("DE", "");
+				valorBuscado = valorBuscado.replaceAll("la", "");
+				valorBuscado = valorBuscado.replaceAll("LA", "");
+				valorBuscado = valorBuscado.replaceAll("de", "");
+				valorBuscado = valorBuscado.replaceAll("CON", "");
+				valorBuscado = valorBuscado.replaceAll("con", "");
 				valorBuscado = valorBuscado.replaceAll(" ", "|");
+				
 				Pattern regex;
 				Matcher match;
 				regex = Pattern.compile("\\b(?i)(" + valorBuscado + ")\\b", Pattern.CASE_INSENSITIVE);

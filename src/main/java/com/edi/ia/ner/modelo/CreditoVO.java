@@ -1,15 +1,22 @@
 package com.edi.ia.ner.modelo;
 
-public class AcreditadoVO {
+import java.util.ArrayList;
+
+public class CreditoVO {
 
 	String numeroCredito;
 	String nombreAcreditado;
 	String textoAcreditadoAnexoB;
 	String textoConyugeAnexoB;
 	String textoPropiedad;
+	ArrayList<EntidadVO> entidades;
 	
-	
-	
+	public ArrayList<EntidadVO> getEntidades() {
+		return entidades;
+	}
+	public void setEntidades(ArrayList<EntidadVO> entidades) {
+		this.entidades = entidades;
+	}
 	public String getTextoAcreditadoAnexoB() {
 		return textoAcreditadoAnexoB;
 	}

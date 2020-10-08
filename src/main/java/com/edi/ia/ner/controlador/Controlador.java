@@ -9,7 +9,7 @@ import java.util.TreeMap;
 
 import org.springframework.stereotype.Service;
 
-import com.edi.ia.ner.modelo.AcreditadoVO;
+import com.edi.ia.ner.modelo.CreditoVO;
 import com.edi.ia.ner.modelo.DocumentoVO;
 import com.edi.ia.ner.modelo.EntidadVO;
 import com.edi.ia.ner.modelo.GrupoEntidadVO;
@@ -29,8 +29,7 @@ public class Controlador implements ControladorServicio {
 	private Float TASA_INTERES_MORATORIO = null;
 
 	@Override
-	public ArrayList<EntidadVO> clasificarCertificadoAdeudo(AcreditadoVO acreditadoVO,
-			ArrayList<EntidadVO> listaEntidadesVO) {
+	public CreditoVO clasificarDatosCredito(CreditoVO creditoVO) {
 
 		String nombreAcreditado = null;
 		String nombreConyuge = null;
@@ -39,7 +38,7 @@ public class Controlador implements ControladorServicio {
 		boolean datosCertificadoValidos = false;
 
 		// Obtener datos del certificado de adeudo
-		for (EntidadVO entidadVO : listaEntidadesVO) {
+		for (EntidadVO entidadVO : creditoVO.getEntidades()) {
 			if (entidadVO.getCodigo().equals(VariablesGlobales.CODIGO_NOMBRE_ACREDITADO)) {
 				nombreAcreditado = entidadVO.getValor();
 				if (nombreAcreditado == null || nombreAcreditado == "" || nombreAcreditado == " ")
@@ -64,34 +63,35 @@ public class Controlador implements ControladorServicio {
 				numeroCreditoConyuge = entidadVO.getValor();
 		}
 
-		listaEntidadesVO = utilidad.asignarCodigoEntidadConyuge(listaEntidadesVO);
+		creditoVO.setEntidades(utilidad.asignarCodigoEntidadConyuge(creditoVO.getEntidades()));
 
 		Cotejar cotejar = new Cotejar();
 
 		// Dar formato a los textos de entrada
-		acreditadoVO.setTextoPropiedad(utilidad.darFormatoTexto(acreditadoVO.getTextoPropiedad()));
-		acreditadoVO.setTextoAcreditadoAnexoB(utilidad.darFormatoTexto(acreditadoVO.getTextoAcreditadoAnexoB()));
-		acreditadoVO.setTextoConyugeAnexoB(utilidad.darFormatoTexto(acreditadoVO.getTextoConyugeAnexoB()));
+		creditoVO.setTextoPropiedad(utilidad.darFormatoTexto(creditoVO.getTextoPropiedad()));
+		creditoVO.setTextoAcreditadoAnexoB(utilidad.darFormatoTexto(creditoVO.getTextoAcreditadoAnexoB()));
+		creditoVO.setTextoConyugeAnexoB(utilidad.darFormatoTexto(creditoVO.getTextoConyugeAnexoB()));
 
 		try {
 			ModelosNerVO modelosNerVO = utilidad.obtenerModelosNer();
+			//Identificar si la escritura es con Anexos 
 			boolean escrituraConAnexoB = false;
 			if (this.buscarValorEntidad(modelosNerVO, "ner-grupo-entidades", "ANEXO_B",
-					acreditadoVO.getTextoAcreditadoAnexoB()) != null) {
+					creditoVO.getTextoAcreditadoAnexoB()) != null) {
 				escrituraConAnexoB = true;
 			}
 
 			if (datosCertificadoValidos) {
 
 				// Identificar orden del certificado
-				int indiceNombreAcreditado = cotejar.buscarEntidad(acreditadoVO.getTextoPropiedad(), nombreAcreditado);
-				int indiceNombreConyuge = cotejar.buscarEntidad(acreditadoVO.getTextoPropiedad(), nombreConyuge);
+				int indiceNombreAcreditado = cotejar.buscarEntidad(creditoVO.getTextoPropiedad(), nombreAcreditado);
+				int indiceNombreConyuge = cotejar.buscarEntidad(creditoVO.getTextoPropiedad(), nombreConyuge);
 
 				if (indiceNombreAcreditado != -1 && indiceNombreConyuge != -1) {
 					// Al cumplirse esta condcion debe intercambiar el orden de las entidades del
 					// certificado entre el acreditado y el conyuge
 					if (indiceNombreAcreditado > indiceNombreConyuge) {
-						this.intercambiarDatos(listaEntidadesVO, VariablesGlobales.ORIGEN_ENTIDAD_CERTIFICADO);
+						this.intercambiarDatos(creditoVO.getEntidades(), VariablesGlobales.ORIGEN_ENTIDAD_CERTIFICADO);
 						// Al cumplir la condición anterior se deben intercanbiar los datos de
 						// referencia
 						String tmp = nombreAcreditado;
@@ -108,8 +108,8 @@ public class Controlador implements ControladorServicio {
 				if (escrituraConAnexoB) {
 
 					// Intercambiar anexo_B con respecto a los datos del certificado
-					indiceNombreConyuge = cotejar.buscarEntidad(acreditadoVO.getTextoAcreditadoAnexoB(), nombreConyuge);
-					indiceNombreAcreditado = cotejar.buscarEntidad(acreditadoVO.getTextoConyugeAnexoB(),
+					indiceNombreConyuge = cotejar.buscarEntidad(creditoVO.getTextoAcreditadoAnexoB(), nombreConyuge);
+					indiceNombreAcreditado = cotejar.buscarEntidad(creditoVO.getTextoConyugeAnexoB(),
 							nombreAcreditado);
 					boolean intercambiar = false;
 					if (indiceNombreConyuge > 0 || indiceNombreAcreditado > 0) {
@@ -117,25 +117,26 @@ public class Controlador implements ControladorServicio {
 					}
 
 					if (intercambiar) {
-						this.intercambiarDatos(listaEntidadesVO, VariablesGlobales.ORIGEN_ENTIDAD_ANEXO_B);
+						this.intercambiarDatos(creditoVO.getEntidades(), VariablesGlobales.ORIGEN_ENTIDAD_ANEXO_B);
 					}
 				}
 			}
 			// Obtener datos del acreditado del anexo B
 			if (escrituraConAnexoB) {
 				String nombreAcreditadoAnexoB = this.buscarValorEntidad(modelosNerVO, "ner-escritura",
-						"ACREDITADO_ANEXO_B", acreditadoVO.getTextoAcreditadoAnexoB());
+						"ACREDITADO_ANEXO_B", creditoVO.getTextoAcreditadoAnexoB());
 				String nombreConyugeAnexoB = this.buscarValorEntidad(modelosNerVO, "ner-escritura",
-						"ACREDITADO_ANEXO_B", acreditadoVO.getTextoConyugeAnexoB());
+						"ACREDITADO_ANEXO_B", creditoVO.getTextoConyugeAnexoB());
 
-				int indiceNombreAcreditado = cotejar.buscarEntidad(acreditadoVO.getTextoPropiedad(), nombreAcreditado);
-				int indiceNombreConyuge = cotejar.buscarEntidad(acreditadoVO.getTextoPropiedad(), nombreConyuge);
+				int indiceNombreAcreditado = cotejar.buscarEntidad(creditoVO.getTextoPropiedad(), nombreAcreditadoAnexoB);
+				int indiceNombreConyuge = cotejar.buscarEntidad(creditoVO.getTextoPropiedad(), nombreConyugeAnexoB);
 
 				if (indiceNombreAcreditado != -1 && indiceNombreConyuge != -1) {
 					// Al cumplirse esta condcion debe intercambiar el orden de las entidades del
 					// certificado entre el acreditado y el conyuge
 					if (indiceNombreAcreditado > indiceNombreConyuge) {
-						this.intercambiarDatos(listaEntidadesVO, VariablesGlobales.ORIGEN_ENTIDAD_ANEXO_B);
+						this.intercambiarDatos(creditoVO.getEntidades()
+								, VariablesGlobales.ORIGEN_ENTIDAD_ANEXO_B);
 					}
 				}
 			}
@@ -144,7 +145,7 @@ public class Controlador implements ControladorServicio {
 			e.printStackTrace();
 		}
 
-		return listaEntidadesVO;
+		return creditoVO;
 	}
 
 	@Override

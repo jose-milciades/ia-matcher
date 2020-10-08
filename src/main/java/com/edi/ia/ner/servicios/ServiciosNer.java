@@ -1,6 +1,5 @@
 package com.edi.ia.ner.servicios;
 
-import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -9,9 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.edi.ia.ner.modelo.AcreditadoVO;
+import com.edi.ia.ner.modelo.CreditoVO;
 import com.edi.ia.ner.modelo.DocumentoVO;
-import com.edi.ia.ner.modelo.EntidadVO;
 import com.edi.ia.ner.modelo.GrupoEntidadesVO;
 import com.edi.ia.ner.controlador.ControladorServicio;
 
@@ -32,9 +30,9 @@ public class ServiciosNer {
 	}
 
 	@PostMapping(value = "/clasificarCertificadoAdeudo")
-	public ArrayList<EntidadVO> clasificarCertificadoAdeudo (AcreditadoVO acreditadoVO, ArrayList<EntidadVO> ListaEntidadesVO) {
+	public CreditoVO clasificarDatosCredito(@RequestBody CreditoVO creditoVO) {
 
-		return controlador.clasificarCertificadoAdeudo(acreditadoVO, ListaEntidadesVO);
+		return controlador.clasificarDatosCredito(creditoVO);
 
 	}
 	
