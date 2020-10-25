@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -17,6 +18,7 @@ import com.edi.ia.ner.modelo.GrupoEntidadesVO;
 import com.edi.ia.ner.modelo.ModelosNerVO;
 import com.edi.ia.ner.modelo.ParametrosConfiguracionVO;
 import com.edi.ia.ner.modelo.ParametrosEntidadVO;
+import com.edi.ia.ner.modelo.ResultadoVO;
 import com.edi.ia.ner.util.Archivo;
 import com.edi.ia.ner.util.Utilidad;
 import com.edi.ia.ner.util.VariablesGlobales;
@@ -74,7 +76,7 @@ public class Controlador implements ControladorServicio {
 
 		try {
 			ModelosNerVO modelosNerVO = utilidad.obtenerModelosNer();
-			//Identificar si la escritura es con Anexos 
+			// Identificar si la escritura es con Anexos
 			boolean escrituraConAnexoB = false;
 			if (this.buscarValorEntidad(modelosNerVO, "ner-grupo-entidades", "ANEXO_B",
 					creditoVO.getTextoAcreditadoAnexoB()) != null) {
@@ -84,8 +86,8 @@ public class Controlador implements ControladorServicio {
 			if (datosCertificadoValidos) {
 
 				// Identificar orden del certificado
-				int indiceNombreAcreditado = cotejar.buscarEntidad(creditoVO.getTextoPropiedad(), nombreAcreditado);
-				int indiceNombreConyuge = cotejar.buscarEntidad(creditoVO.getTextoPropiedad(), nombreConyuge);
+				int indiceNombreAcreditado = cotejar.buscarNombre(creditoVO.getTextoPropiedad(), nombreAcreditado);
+				int indiceNombreConyuge = cotejar.buscarNombre(creditoVO.getTextoPropiedad(), nombreConyuge);
 
 				if (indiceNombreAcreditado != -1 && indiceNombreConyuge != -1) {
 					// Al cumplirse esta condcion debe intercambiar el orden de las entidades del
@@ -108,9 +110,8 @@ public class Controlador implements ControladorServicio {
 				if (escrituraConAnexoB) {
 
 					// Intercambiar anexo_B con respecto a los datos del certificado
-					indiceNombreConyuge = cotejar.buscarEntidad(creditoVO.getTextoAcreditadoAnexoB(), nombreConyuge);
-					indiceNombreAcreditado = cotejar.buscarEntidad(creditoVO.getTextoConyugeAnexoB(),
-							nombreAcreditado);
+					indiceNombreConyuge = cotejar.buscarNombre(creditoVO.getTextoAcreditadoAnexoB(), nombreConyuge);
+					indiceNombreAcreditado = cotejar.buscarNombre(creditoVO.getTextoConyugeAnexoB(), nombreAcreditado);
 					boolean intercambiar = false;
 					if (indiceNombreConyuge > 0 || indiceNombreAcreditado > 0) {
 						intercambiar = true;
@@ -128,15 +129,15 @@ public class Controlador implements ControladorServicio {
 				String nombreConyugeAnexoB = this.buscarValorEntidad(modelosNerVO, "ner-escritura",
 						"ACREDITADO_ANEXO_B", creditoVO.getTextoConyugeAnexoB());
 
-				int indiceNombreAcreditado = cotejar.buscarEntidad(creditoVO.getTextoPropiedad(), nombreAcreditadoAnexoB);
-				int indiceNombreConyuge = cotejar.buscarEntidad(creditoVO.getTextoPropiedad(), nombreConyugeAnexoB);
+				int indiceNombreAcreditado = cotejar.buscarNombre(creditoVO.getTextoPropiedad(),
+						nombreAcreditadoAnexoB);
+				int indiceNombreConyuge = cotejar.buscarNombre(creditoVO.getTextoPropiedad(), nombreConyugeAnexoB);
 
 				if (indiceNombreAcreditado != -1 && indiceNombreConyuge != -1) {
 					// Al cumplirse esta condcion debe intercambiar el orden de las entidades del
 					// certificado entre el acreditado y el conyuge
 					if (indiceNombreAcreditado > indiceNombreConyuge) {
-						this.intercambiarDatos(creditoVO.getEntidades()
-								, VariablesGlobales.ORIGEN_ENTIDAD_ANEXO_B);
+						this.intercambiarDatos(creditoVO.getEntidades(), VariablesGlobales.ORIGEN_ENTIDAD_ANEXO_B);
 					}
 				}
 			}
@@ -200,6 +201,7 @@ public class Controlador implements ControladorServicio {
 
 		TASA_INTERES_ORDINARIO = null;
 		TASA_INTERES_MORATORIO = null;
+		Cotejar cotejar = new Cotejar();
 
 		documento.setTexto(utilidad.darFormatoTexto(documento.getTexto()));
 		try {
@@ -219,22 +221,31 @@ public class Controlador implements ControladorServicio {
 				for (EntidadVO entidadVO : modeloVO.getEntidades()) {
 					// obtiene los parametros de la entidad a busrcar
 					ParametrosEntidadVO parametrosEntidadVO = mapParametrosEntidadVO.get(entidadVO.getEntidad());
-					entidadVO.setValor(null);
+
 					// Validar que los parametros no sean nulos y que la entidad no se haya
 					// procesado anteriormente, para que las entidades repetidas se procesen en una
 					// siguiente hoja
 					if (parametrosEntidadVO != null
 							&& entidadesPreviamenteProcesadas.contains(entidadVO.getEntidad()) == false) {
 
-						// Buscar Valor de la entidad
-						entidadVO.setValor(this.buscarValorEntidad(parametrosEntidadVO, documento.getTexto()));
-						// Realizar reglas particulares por entidad
-						this.aplicarReglasParticularesEntidad(entidadVO, modeloVO.getEntidades());
+						// Buscar valor de entidades relacionadas con colindacias
+						if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadMedidasColindancias")) {
+							ResultadoVO resultadoVO = cotejar.reconocerEntidadMedidasColindancias(parametrosEntidadVO,
+									documento.getTexto());
+							this.completarEntidadesRelacionadas(resultadoVO, parametrosEntidadVO,
+									modeloVO.getEntidades());
+						}
+
+						else {
+							// Buscar valor de entidades individuales
+							entidadVO.setValor(this.buscarValorEntidad(parametrosEntidadVO, documento.getTexto()));
+							this.aplicarReglasParticularesEntidad(entidadVO, modeloVO.getEntidades(),parametrosEntidadVO);
+						}
 					}
 
 					entidadesPreviamenteProcesadas.add(entidadVO.getEntidad());
 
-					if (entidadVO.getValor() != null) {
+					if (entidadVO.getValor() != " ") {
 						entidadVO.setConfianza(95);
 					}
 				}
@@ -259,8 +270,11 @@ public class Controlador implements ControladorServicio {
 			valorEntidad = cotejar.reconocerEntidadSiguiente(parametrosEntidadVO, texto);
 		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadLista")) {
 			valorEntidad = cotejar.reconocerEntidadLista(parametrosEntidadVO, texto);
-		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadCotejarContenido")) {
-			valorEntidad = cotejar.reconocerEntidadCotejarContenido(parametrosEntidadVO, texto);
+			// } else if
+			// (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadCotejarContenido"))
+			// {
+			// valorEntidad = cotejar.reconocerEntidadCotejarContenido(parametrosEntidadVO,
+			// texto);
 		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadNumeroClausula")) {
 			valorEntidad = cotejar.reconocerEntidadNumeroClausula(parametrosEntidadVO, texto);
 		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerParrafo")) {
@@ -323,7 +337,7 @@ public class Controlador implements ControladorServicio {
 		return documento;
 	}
 
-	public void aplicarReglasParticularesEntidad(EntidadVO entidadVO, ArrayList<EntidadVO> listaEntidadesVO) {
+	public void aplicarReglasParticularesEntidad(EntidadVO entidadVO, ArrayList<EntidadVO> listaEntidadesVO, ParametrosEntidadVO parametrosEntidadVO) {
 
 		// Regla sumar TASA_INTERES_MORATORIO
 		if (entidadVO.getEntidad().equals("TASA_INTERES_ORDINARIO") && entidadVO.getValor() != null) {
@@ -345,8 +359,36 @@ public class Controlador implements ControladorServicio {
 		// documento pero no se logro procesar
 		if (entidadVO.getValor() == null) {
 			entidadVO.setValor(" ");
+		} else {
+			if (entidadVO.getValor() != " ") {
+				entidadVO.setValor(entidadVO.getValor().trim());
+				
+				entidadVO.setValor(utilidad.removerValoresAlFinal(parametrosEntidadVO.getValoresRemoverAlFinal(), entidadVO.getValor()));
+			}
+
 		}
 
+	}
+
+	public void completarEntidadesRelacionadas(ResultadoVO resultadoVO, ParametrosEntidadVO parametrosEntidadVO,
+			ArrayList<EntidadVO> listaEntidadesVO) {
+
+		ArrayList<String> listaentidadesRelacionadas = new ArrayList<String>();
+		listaentidadesRelacionadas.addAll(Arrays.asList(parametrosEntidadVO.getEntidadRelacionadas().split(",")));
+		int i = 0;
+		for (String valor : resultadoVO.getListaResutado()) {
+
+			if (listaentidadesRelacionadas.size() > i) {
+				for (EntidadVO entidadVO : listaEntidadesVO) {
+					if (entidadVO.getEntidad().equals(listaentidadesRelacionadas.get(i))) {
+						entidadVO.setValor(valor);
+					}
+
+					this.aplicarReglasParticularesEntidad(entidadVO, listaEntidadesVO, parametrosEntidadVO);
+				}
+			}
+			i++;
+		}
 	}
 
 	public void intercambiarDatos(ArrayList<EntidadVO> listaEntidadesVO, String origenEntidad) {

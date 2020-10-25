@@ -2,13 +2,18 @@ package com.edi.ia.ner.controlador;
 
 import java.util.regex.Pattern;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
-
+import com.edi.ia.ner.modelo.ContenidoTextoVO;
 import com.edi.ia.ner.modelo.ParametrosEntidadVO;
+import com.edi.ia.ner.modelo.ResultadoVO;
+import com.edi.ia.ner.util.Utilidad;
 
 public class Cotejar {
+
+	Utilidad utilidad = new Utilidad();
 
 	public String reconocerEntidadEntreTexto(ParametrosEntidadVO parametrosEntidadVO, String texto) {
 		String valorEntidad = null;
@@ -276,24 +281,15 @@ public class Cotejar {
 		return clausula;
 	}
 
-	public String reconocerEntidadCotejarContenido(ParametrosEntidadVO parametrosEntidadVO, String texto) {
-		// String valorEntidad = "";
-
-		String parrafo = this.reconocerParrafo(parametrosEntidadVO, texto);
-
-		return parrafo.trim();
-	}
-
-	public String reconocerParrafo(ParametrosEntidadVO parametrosEntidadVO, String texto) {
+	public ContenidoTextoVO reconocerEntidadCotejarContenido(ParametrosEntidadVO parametrosEntidadVO, String texto) {
 
 		String parrafo = null;
-
 		int inicio = -1;
 		int fin = -1;
 		int keyMapAnterior = -1;
 		Pattern regex;
 		Matcher match;
-
+		ArrayList<Integer> listaIndicesProximosMayor = new ArrayList<Integer>();
 		if (parametrosEntidadVO.getValoresContenido() != null) {
 			// Buscar indices de palabras claves
 			Map<Integer, String> mapIndex = new TreeMap<Integer, String>();
@@ -335,7 +331,7 @@ public class Cotejar {
 				listaIndicesProximos.add(indicesProximos);
 			}
 			// Se identifica la lista de conicidencias más larga
-			ArrayList<Integer> listaIndicesProximosMayor = new ArrayList<Integer>();
+
 			int longitudListaAnterior = -1;
 			for (ArrayList<Integer> indicesProximosAux : listaIndicesProximos) {
 
@@ -380,38 +376,227 @@ public class Cotejar {
 				}
 
 				parrafo = texto.substring(inicio, fin).trim();
+			} else {
+				listaIndicesProximosMayor.clear();
 			}
 		}
 
-		return parrafo;
+		ContenidoTextoVO contenidoTextoVO = new ContenidoTextoVO();
+		contenidoTextoVO.setIndices(listaIndicesProximosMayor);
+		contenidoTextoVO.setTexto(parrafo);
+
+		return contenidoTextoVO;
+	}
+
+	public String reconocerParrafo(ParametrosEntidadVO parametrosEntidadVO, String texto) {
+
+		ContenidoTextoVO contenidoTextoVO = this.reconocerEntidadCotejarContenido(parametrosEntidadVO, texto);
+		return contenidoTextoVO.getTexto();
 
 	}
 
-	public int buscarEntidad(String texto, String valorBuscado) {
+	public int buscarNombre(String texto, String nombre) {
 
 		int indice = -1;
-		if (valorBuscado != null) {
-			if (valorBuscado != "" && valorBuscado != " ") {
-				
-				valorBuscado = valorBuscado.replaceAll("de", "");
-				valorBuscado = valorBuscado.replaceAll("DE", "");
-				valorBuscado = valorBuscado.replaceAll("la", "");
-				valorBuscado = valorBuscado.replaceAll("LA", "");
-				valorBuscado = valorBuscado.replaceAll("de", "");
-				valorBuscado = valorBuscado.replaceAll("CON", "");
-				valorBuscado = valorBuscado.replaceAll("con", "");
-				valorBuscado = valorBuscado.replaceAll(" ", "|");
-				
-				Pattern regex;
-				Matcher match;
-				regex = Pattern.compile("\\b(?i)(" + valorBuscado + ")\\b", Pattern.CASE_INSENSITIVE);
-				match = regex.matcher(texto);
-				if (match.find()) {
-					indice = match.end();
+		if (nombre != null) {
+			if (nombre != "" && nombre != " ") {
+
+				texto = utilidad.limpiarAcentos(texto);
+				nombre = utilidad.limpiarAcentos(nombre);
+
+				nombre = utilidad.darFormatoNombre(nombre);
+				ArrayList<String> valoresContenido = new ArrayList<String>();
+				valoresContenido.addAll(Arrays.asList(nombre.split(" ")));
+				ParametrosEntidadVO parametrosEntidadVO = new ParametrosEntidadVO();
+				parametrosEntidadVO.setValoresContenido(valoresContenido);
+				parametrosEntidadVO.setAsiertos(2);
+				parametrosEntidadVO.setEspacioEntrePalabras(70);
+				parametrosEntidadVO.setLongitud(0);
+
+				ArrayList<Integer> indices = this.reconocerEntidadCotejarContenido(parametrosEntidadVO, texto)
+						.getIndices();
+
+				if (indices != null && indices.size() > 0) {
+					indice = indices.get(indices.size() - 1);
 				}
 			}
 		}
 		return indice;
+	}
+
+	public ResultadoVO reconocerEntidadMedidasColindancias(ParametrosEntidadVO parametrosEntidadVO, String texto) {
+
+		int indiceAnterior = -1;
+
+		ArrayList<ResultadoVO> listaIndicesResultadosVO = new ArrayList<ResultadoVO>();
+
+		// Mapa con lista priorizada de los valores o expresiones regulares que se deben indentificar en el
+		// texto
+		Map<String, ArrayList<String>> valoresPorPrioridad = utilidad
+				.getValoresPorPrioridad(parametrosEntidadVO.getValoresContenido());
+
+		// Recorrer expreciones regulares por prioridad
+		for (Map.Entry<String, ArrayList<String>> valores : valoresPorPrioridad.entrySet()) {
+
+			// Obtiene los resultados en mapas ordenados por Prioridad
+			ResultadoVO indicesResultadosVO = this.obtenerIndices(valores.getValue(), texto);
+
+			listaIndicesResultadosVO.add(indicesResultadosVO);
+		}
+		//Quitar indices de valores a omitir
+		ResultadoVO indicesResultadoOmitir = this.obtenerIndices(parametrosEntidadVO.getValoresOmitir(), texto);
+		this.omitirValores(listaIndicesResultadosVO, indicesResultadoOmitir);
+		
+		
+		// Obtener las colindancias agrupadas en la lista del objeto ResultadoVO
+		ResultadoVO resultadoFinal = this.obtenerResultadoColindancias(listaIndicesResultadosVO,
+				parametrosEntidadVO.getLongitud(), texto);
+
+		indiceAnterior = -1;
+		boolean existeCaracterDeTermino = false;
+		// Identificar indice Final y obtener la ultima colindancia
+		ResultadoVO resultadoIndicesFinales = this.obtenerIndices(parametrosEntidadVO.getValoresFinales(), texto);
+
+		for (Map.Entry<Integer, String> indice : resultadoIndicesFinales.getMapResultado().entrySet()) {
+
+			if (indice.getKey() > resultadoFinal.getUltimoIndice()) {
+				if (indice.getKey() - indiceAnterior > parametrosEntidadVO.getLongitud()) {
+
+					resultadoFinal.getListaResutado()
+							.add(texto.substring(resultadoFinal.getUltimoIndice(), indice.getKey()));
+					existeCaracterDeTermino = true;
+					break;
+				}
+			}
+			indiceAnterior = indice.getKey();
+		}
+		if (!existeCaracterDeTermino) {
+
+			if (texto.indexOf(" ", resultadoFinal.getUltimoIndice() + 100) > resultadoFinal.getUltimoIndice()) {
+				resultadoFinal.getListaResutado().add(texto.substring(resultadoFinal.getUltimoIndice(),
+						texto.indexOf(" ", resultadoFinal.getUltimoIndice() + 100)));
+			} else {
+				resultadoFinal.getListaResutado()
+						.add(texto.substring(resultadoFinal.getUltimoIndice(), texto.length()));
+			}
+		}
+
+		return resultadoFinal;
+	}
+
+	/**
+	 * public ResultadoVO
+	 * agruparResultadosMedidasColindancias(ArrayList<ResultadoVO>
+	 * listaResultadosVO) {
+	 * 
+	 * ResultadoVO resultadoTotal = new ResultadoVO(); ArrayList<String>
+	 * listaResultadosTotales = new ArrayList<String>();
+	 * resultadoTotal.setListaResutado(listaResultadosTotales); int ultimoIndice =
+	 * -1;
+	 * 
+	 * for (ResultadoVO resultadoVO : listaResultadosVO) {
+	 * resultadoTotal.setUltimoIndice(resultadoVO.getUltimoIndice()); for
+	 * (Map.Entry<Integer, String> valores :
+	 * resultadoVO.getMapResultado().entrySet()) {
+	 * 
+	 * ultimoIndice = valores.getKey();
+	 * 
+	 * if (ultimoIndice == -1) { mapResultadoTotal.put(valores.getKey(),
+	 * valores.getValue()); } else { if (valores.getKey() >
+	 * resultadoTotal.getUltimoIndice()) { mapResultadoTotal.put(valores.getKey(),
+	 * valores.getValue()); } }
+	 * 
+	 * } resultadoTotal.setUltimoIndice(ultimoIndice); } return resultadoTotal; }
+	 **/
+
+	
+	public void omitirValores(ArrayList<ResultadoVO> listaIndicesResultadosVO, ResultadoVO indicesResultadoOmitir) {
+		
+		for (ResultadoVO resultadoVO : listaIndicesResultadosVO) {
+			ArrayList<Integer> indicesOmitir = new ArrayList<Integer>();
+			for (Map.Entry<Integer, String> valores : resultadoVO.getMapResultado().entrySet()) {
+				for (Map.Entry<Integer, String> valoresOmitir : indicesResultadoOmitir.getMapResultado().entrySet()) {
+					
+					if(valoresOmitir.getKey() > valores.getKey()-20 && valoresOmitir.getKey() < valores.getKey()+20) {
+						indicesOmitir.add(valores.getKey());	
+					}
+				}
+			}
+			for (Integer i : indicesOmitir) {
+				resultadoVO.getMapResultado().remove(i);
+				}
+		}
+		
+		
+		
+	}
+	
+	public ResultadoVO obtenerResultadoColindancias(ArrayList<ResultadoVO> listaIndicesResultadosVO, int longitud,
+			String texto) {
+
+		ArrayList<String> listaResutadoTotal = new ArrayList<String>();
+		ResultadoVO resultadoTotal = new ResultadoVO();
+		resultadoTotal.setListaResutado(listaResutadoTotal);
+
+		for (ResultadoVO resultadoVO : listaIndicesResultadosVO) {
+			int indiceAnterior = -1;
+			System.out.println("Grupo: " + resultadoVO.getGrupo());
+			for (Map.Entry<Integer, String> valores : resultadoVO.getMapResultado().entrySet()) {
+				{
+					
+						// Validar que el indice actual sea mayor que el indice del grupo anterior, para
+						// que no se traslapen los valores
+						if (valores.getKey() > resultadoTotal.getUltimoIndice()) {
+
+							System.out
+									.println("valores.getKey(): " + valores.getKey() + " Dato: " + valores.getValue());
+							System.out.println("resultadoTotal.setUltimoIndice: " + resultadoTotal.getUltimoIndice());
+							if (resultadoVO.getMapResultado().size() > 1) {
+								if (indiceAnterior != -1) {
+								// Validar que se cumpla una separación minima entre los indices
+								if (valores.getKey() - indiceAnterior > longitud) {
+									// Fijar resultados encontrados en el texto
+									System.out.println("valores.getKey(): " + valores.getKey() + " Texto: "
+											+ texto.substring(indiceAnterior, valores.getKey()));
+									listaResutadoTotal.add(texto.substring(indiceAnterior, valores.getKey()));
+									indiceAnterior = valores.getKey();
+
+									// Fija el ultimo indice de los resulatados del grupo
+									resultadoVO.setUltimoIndice(valores.getKey());
+
+								}
+							}else {
+								indiceAnterior = valores.getKey();
+								System.out.println("indiceAnterior: " + indiceAnterior);
+							}
+						}
+					} 
+				}
+			}
+			// Fija el ultimo indice al resultado total, necesario para completar el ultimo
+			// dato
+
+			resultadoTotal.setUltimoIndice(resultadoVO.getUltimoIndice());
+		}
+		return resultadoTotal;
+	}
+
+	public ResultadoVO obtenerIndices(ArrayList<String> listaValores, String texto) {
+
+		Map<Integer, String> mapResultado = new TreeMap<Integer, String>();
+		Pattern regex;
+		Matcher match;
+		ResultadoVO resultadoVO = new ResultadoVO();
+		resultadoVO.setMapResultado(mapResultado);
+		for (String valor : listaValores) {
+			regex = Pattern.compile(valor);
+			match = regex.matcher(texto);
+			while (match.find()) {
+				mapResultado.put(match.start(), match.group(0));
+
+			}
+		}
+		return resultadoVO;
 	}
 
 }
