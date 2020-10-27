@@ -19,8 +19,17 @@ public class EntidadVO implements Serializable{
 	private String codigoServicio;
 	private int confianza;
 	private String origenEntidad;
+	private Integer idDocumentoProcesado;
 	
 	
+
+	public Integer getIdDocumentoProcesado() {
+		return idDocumentoProcesado;
+	}
+
+	public void setIdDocumentoProcesado(Integer idDocumentoProcesado) {
+		this.idDocumentoProcesado = idDocumentoProcesado;
+	}
 
 	public String getCodigoConyuge() {
 		return codigoConyuge;
