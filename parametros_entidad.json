@@ -1,0 +1,702 @@
+{
+    "modelos": [
+        {
+            "modelo": "ner-certificado",
+            "parametrosEntidades": [
+                {
+                  "posicion" : "0",
+                  "entidad" : "DELEGACION",
+                  "valoresFinales" : [
+                    "DEL INSTITUTO",
+                    "DEL INSTITUT",
+                    "DEL INFONAVIT"
+                  ],
+                  "valoresIniciales" : [
+                    "DELEGACIÓN REGIONAL DE",
+                    "DELEGACIÓN REGIONAL",
+                    "DELEGACION REGIONAL DE",
+                    "DELEGACION REGIONAL"
+                  ],
+                  "tipoReconocimiento" : "reconocerEntidadEntreTexto"
+                },
+                {
+                  "posicion" : "0",
+                  "entidad" : "NOMBRE_ACREDITADO",
+                  "valoresFinales" : [
+                    "COINCID",
+                    "COINCIDE"
+                  ],
+                  "valoresIniciales" : [
+                    "DERECHOHABIENTE ACREDITADO"
+                  ],
+                  "tipoReconocimiento" : "reconocerEntidadEntreTexto"
+                },
+                {
+                  "posicion" : "0",
+                  "entidad" : "QUIEN_FIRMA_CERTIFICADO",
+                  "valoresFinales" : [
+                    "GERENTE"
+                  ],
+                  "valoresIniciales" : [
+                    "LICENCIADO(A)",
+                    "LICENCIADO"
+                  ],
+                  "tipoReconocimiento" : "reconocerEntidadEntreTexto"
+                },
+                {
+                  "valoresIniciales" : [
+                    "TIPO DE CRÉDITO",
+                    "TIPO DE CREDITO",
+                    "TIP DE CREDITO",
+                    "TIP DE CRÉDITO"
+                  ],
+                  "longitud" : 40,
+                  "entidad" : "CONDICIONES _CREDITO",
+                  "valoresFinales" : [
+                    ""
+                  ],
+                  "expresionRegular" : "(?i)(vsm|PESOS)",
+                  "tipoReconocimiento" : "reconocerEntidadExpresionRegular"
+                },
+                {
+                  "posicion" : "0",
+                  "longitud" : 10,
+                  "entidad" : "MESES_ADEUDADOS_CERTIFICADO_ADEUDOS",
+                  "valoresFinales" : [
+                    ""
+                  ],
+                  "valoresIniciales" : [
+                    "OMISOS ACTUALES"
+                  ],
+                  "tipoReconocimiento" : "reconocerEntidadSiguiente"
+                },
+                {
+                  "valoresIniciales" : [
+                    "FECHA DE EMISIÓN"
+                  ],
+                  "longitud" : 30,
+                  "entidad" : "FECHA_EMISION",
+                  "valoresFinales" : [
+                    ""
+                  ],
+                  "expresionRegular" : "\\d{1,2}\\s{1,2}\\w{1,2}\\s{1,2}\\w{1,12}\\s{1,2}\\w{1,2}\\s{1,2}\\d{4}",
+                  "tipoReconocimiento" : "reconocerEntidadExpresionRegular"
+                },
+                {
+                  "valoresIniciales" : [
+                    "CAPITAL"
+                  ],
+                  "longitud" : 20,
+                  "entidad" : "SUERTE_PRINCIPAL",
+                  "valoresFinales" : [
+                    ""
+                  ],
+                  "expresionRegular" : "(?:[\\s,$])\\s{0,2}\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{0,9})",
+                  "tipoReconocimiento" : "reconocerEntidadExpresionRegular"
+                },
+                {
+                  "valoresIniciales" : [
+                    "CREDITO",
+                    "CRÉDITO"
+                  ],
+                  "longitud" : 20,
+                  "entidad" : "NUMERO_CREDITO",
+                  "valoresFinales" : [
+                    ""
+                  ],
+                  "expresionRegular" : "\\d{5,15}",
+                  "tipoReconocimiento" : "reconocerEntidadExpresionRegular"
+                },
+                {
+                  "valoresIniciales" : [
+                    "INTERESES"
+                  ],
+                  "longitud" : 20,
+                  "entidad" : "MONTO_VSM_INTERES_MORATORIO",
+                  "valoresFinales" : [
+                    ""
+                  ],
+                  "expresionRegular" : "(?:[\\s,$])\\s{0,2}\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{0,9})",
+                  "tipoReconocimiento" : "reconocerEntidadExpresionRegular"
+                },
+                {
+                  "posicion" : "0",
+                  "longitud" : 10,
+                  "entidad" : "NUMERO_HOJAS_CA",
+                  "valoresFinales" : [
+                    ""
+                  ],
+                  "valoresIniciales" : [
+                    "CONSTA DE"
+                  ],
+                  "tipoReconocimiento" : "reconocerEntidadSiguiente"
+                },
+                {
+                  "valoresFinales" : [
+                    "MOVIMIENTOS"
+                  ],
+                  "posicion" : "1",
+                  "entidad" : "PRORROGAS_APLICADAS",
+                  "expresionRegular" : "\\d{1,2}\\s{1,2}\\d{1,2}\/\\d{1,2}\/\\d{1,4}",
+                  "valoresIniciales" : [
+                    "PRÓPRROGAS",
+                    "PRÓRROGAS",
+                    "PRORROGAS"
+                  ],
+                  "tipoReconocimiento" : "reconocerEntidadLista"
+                }
+            ]
+        },
+        {
+            "modelo": "reconocer_demanda",
+            "parametrosEntidades": [
+                {
+                    "asiertos": "2",
+                    "longitud": "90",
+                    "entidad": "TIPO_DEMANDA",
+                    "expresionRegular": "",
+                    "valoresContenido": [
+                        "consentimiento",
+                        "cónyuge",
+                        "conyuge"
+                    ],
+                    "tipoReconocimiento": "reconocerEntidadCotejarContenido"
+                }
+            ]
+        },
+        {
+            "modelo": "ner-escritura",
+            "parametrosEntidades": [
+        {
+          "asiertos" : "3",
+          "tipoReconocimiento" : "reconocerEntidadCreditoPesosAnexoB",
+          "entidad" : "CREDITO_PESOS",
+          "espacioEntrePalabras" : "10",
+          "expresionRegular" : "(?:[$|S])\\s{0,1}\\d{1,9}(?:[\\s{1,2},.,]{1,3}\\d{1,9}){1,3}",
+          "expresionRegularAux" : "(?i)(DIEZ|VEINT|TREINTA|CUARENTA|CINCUENTA|SESENTA|SETENTA|OCHENTA|NOVENTA|CIEN|UN|DOS|TRES|CUATRO|CINCO|SEIS|SIETE|OCHO|NUEVE|MN|M N|M.N.|M.N|MN.|M N.|PESOS|DIEZ|ONCE|DOCE|TRECE|CATORCE|QUINCE|QUINIENTOS|SETECIENTOS|NOVECIENTOS|MILLON)"
+        },
+        {
+          "tipoReconocimiento" : "reconocerEntidadNumeroDecimal",
+          "entidad" : "ROA_VSM",
+          "expresionRegular" : "\\s(?:[0|1])(?:[\\s|.|,])\\d{1,9}\\b",
+          "posicion" : "0"
+        },
+        {
+          "tipoReconocimiento" : "reconocerEntidadNumeroDecimal",
+          "entidad" : "REA_VSM",
+          "expresionRegular" : "\\s(?:[0|1])(?:[\\s|.|,])\\d{1,9}\\b",
+          "posicion" : "1"
+        },
+        {
+          "tipoReconocimiento" : "reconocerEntidadNumeroDecimal",
+          "entidad" : "TASA_INTERES_ORDINARIO",
+          "expresionRegular" : "\\b(?:[0|1|2|3|4|5|6|7|8|9])(?:[\\s{0,2},.,]{1,3}\\d{1,9})\\s{0,2}(?:[%])",
+          "posicion" : "0"
+        },
+        {
+          "tipoReconocimiento" : "reconocerEntidadNumeroDecimal",
+          "entidad" : "TASA_INTERES_MORATORIO",
+          "expresionRegular" : "\\b(?:[0|1|2|3|4|5|6|7|8|9])(?:[\\s{0,2},.,]{1,3}\\d{1,9})\\s{0,2}(?:[%])",
+          "posicion" : "1"
+        },
+        {
+          "tipoReconocimiento" : "reconocerEntidadEntreTextoExpresionRegular",
+          "entidad" : "ACREDITADO_ANEXO_B",
+          "expresionRegularValoresIniciales":"(?i)(biente|iente|Derechoha|bienta)",
+          "expresionRegularValoresFinales":"\\b(?i)(N.S.S|NSS|NS.S|N.S\\sS|N\\sS\\sS|V.S.S|VSS)\\b",
+		   "posicion" : "0"
+        }
+            ]
+        },
+        {
+            "modelo": "ner-grupo-entidades",
+            "parametrosEntidades": [
+                {
+                  "entidad" : "ANEXO_B",
+                  "codigoServicio" : "servicio_matcher",
+                  "asiertos" : "7",
+                  "espacioEntrePalabras" : "400",
+                  "longitud" : "0",
+                  "valoresContenido" : [
+                    "realizado",
+                    "montos",
+                    "causaran",
+                    "causarán",
+                    "formalice",
+                    "solicitado",
+                    "cubiertos",
+                    "disponer",
+                    "otorgará",
+                    "otorgara",
+                    "impuestos",
+                    "Propone"
+                  ],
+                  "tipoReconocimiento" : "reconocerParrafo"
+                },
+                {
+                  "entidad" : "CERTIFICADO",
+                  "codigoServicio" : "servicio_matcher",
+                  "asiertos" : "6",
+                  "espacioEntrePalabras" : "400",
+                  "longitud" : "0",
+                  "valoresContenido" : [
+                    "SUSCRITO",
+                    "RECAUDACION",
+                    "ORGANICO",
+                    "CERTIFICA",
+                    "CONSULTA",
+                    "CARTERA,",
+                    "ACREDITADO",
+                    "APORTACIONES",
+                    "DESCUENTOS",
+                    "PUBLICADO",
+                    "REGLAMENTO",
+                    "INSTITUTO",
+                    "REGISTROS",
+                    "CERTIFICADO",
+                    "DESPRENDE",
+                    "LICENCIADO",
+                    "DISPOSICIONES",
+                    "MANTIENE",
+                    "FISCAL",
+                    "DELEGACIÓN",
+                    "DELEGACIÓN",
+                    "REGIONAL"
+                  ],
+                  "tipoReconocimiento" : "reconocerParrafo"
+                },
+                {
+                  "entidad" : "CERTIFICADO_1",
+                  "codigoServicio" : "servicio_matcher",
+                  "asiertos" : "2",
+                  "espacioEntrePalabras" : "15",
+                  "longitud" : "100",
+                  "valoresContenido" : [
+                    "OMISOS",
+                    "ACTUALES"
+                  ],
+                  "tipoReconocimiento" : "reconocerParrafo"
+                },
+                {
+                    "tipoReconocimiento": "reconocerParrafo",
+                    "codigoServicio": "servicio_npl",
+                    "asiertos": "10",
+                    "espacioEntrePalabras": "500",
+                    "longitud": "0",
+                    "valoresContenido": [
+                        "CONTRATO",
+                        "APERTURA",
+                        "CRÉDITO",
+                        "CREDITO",
+                        "otorga",
+                        "cantidad",
+                        "condiciones",
+                        "financieras",
+                        "amortizacion",
+                        "Otorgado"
+                    ],
+                    "entidad": "CLAUSULA_OTORGAMIENTO_CREDITO"
+                },
+                {
+                    "tipoReconocimiento": "reconocerParrafo",
+                    "codigoServicio": "servicio_npl",
+                    "asiertos": "8",
+                    "longitud": "0",
+                    "entidad": "DATOS_FUNDAMENTALES_INICIALES_5_ENTIDADES",
+                    "espacioEntrePalabras": "150",
+                    "cantidadMinimaCaracteres" : "2200",
+                    "valoresContenido": [
+                        "NOTARIO",
+                        "notaria",
+                        "notaría",
+                        "PUBLICO",
+                        "público",
+                        "publica",
+                        "pública",
+                        "volumen",
+                        "ciudad",
+                        "constar",
+                        "acta",
+                        "distrito",
+                        "dias",
+                        "días",
+                        "dia",
+                        "día",
+                        "libro",
+                        "titular",
+                        "numero",
+                        "número",
+                        "siguientes",
+                        "lic.",
+                        "lic",
+                        "licenciado",
+                        "licenciada"
+                    ]
+                },
+                {
+                    "tipoReconocimiento": "reconocerParrafo",
+                    "codigoServicio": "servicio_npl",
+                    "asiertos": "5",
+                    "longitud": "0",
+                    "entidad": "JURISDICCION",
+                    "espacioEntrePalabras": "190",
+                    "valoresContenido": [
+                        "tribunales",
+                        "competentes",
+                        "competente",
+                        "jurisdicción",
+                        "jurisdiccion",
+                        "presente",
+                        "tribunal",
+                        "somete",
+                        "someten",
+                        "someterse",
+                        "competencia",
+                        "cumplimiento",
+                        "partes",
+                        "inmueble",
+                        "ubicación",
+                        "Ubicacion",
+                        "renuncia"
+                    ]
+                },
+                {
+                    "tipoReconocimiento": "reconocerParrafo",
+                    "codigoServicio": "servicio_npl",
+                    "asiertos": "7",
+                    "longitud": "0",
+                    "entidad": "PLAZO",
+                    "espacioEntrePalabras": "180",
+                    "valoresContenido": [
+                        "plazo",
+                        "pago",
+                        "pagos",
+                        "capital",
+                        "contrato",
+                        "años",
+                        "contados",
+                        "mensuales",
+                        "consecutivas",
+                        "términos",
+                        "terminos",
+                        "amortizaciones",
+                        "amortización",
+                        "amortizacion",
+                        "máximo",
+                        "maximo",
+                        "vencido",
+                        "efectivos",
+                        "pagar",
+                        "treinta"
+                    ]
+                },
+                {
+                    "tipoReconocimiento": "reconocerParrafo",
+                    "codigoServicio": "servicio_npl",
+                    "asiertos": "3",
+                    "longitud": "0",
+                    "entidad": "PLAZO2",
+                    "espacioEntrePalabras": "20",
+                    "valoresContenido": [
+                        "plazo",
+                        "del",
+                        "credito",
+                        "crédito"
+                    ]
+                },
+                {
+                    "tipoReconocimiento": "reconocerParrafo",
+                    "codigoServicio": "servicio_npl",
+                    "asiertos": "6",
+                    "longitud": "0",
+                    "entidad": "PRORROGA",
+                    "espacioEntrePalabras": "200",
+                    "valoresContenido": [
+                        "prórroga",
+                        "prorroga",
+                        "prórrogas",
+                        "prorrogas",
+                        "deje",
+                        "percibir",
+                        "salariales",
+                        "ingresos",
+                        "prestar",
+                        "formalizacion",
+                        "formalización",
+                        "voluntad",
+                        "dejado",
+                        "prevista",
+                        "previstas",
+                        "previstos",
+                        "previsto",
+                        "deberá",
+                        "debera",
+                        "consiguiente",
+                        "patrón",
+                        "patron",
+                        "otorgue",
+                        "otorgara",
+                        "otorgará",
+                        "trámite",
+                        "tramite",
+                        "exista"
+                    ]
+                },
+                {
+                    "tipoReconocimiento": "reconocerParrafo",
+                    "codigoServicio": "servicio_npl",
+                    "asiertos": "4",
+                    "longitud": "0",
+                    "entidad": "ACTUALIZACION_CREDITO",
+                    "espacioEntrePalabras": "200",
+                    "valoresContenido": [
+                        "proporcion",
+                        "proporción",
+                        "rija",
+                        "resultare",
+                        "actualización",
+                        "actualizacion",
+                        "incrementará",
+                        "incrementara",
+                        "aumente",
+                        "aumento",
+                        "insoluto",
+                        "pagar",
+                        "acto",
+                        "obliga",
+                        "diario",
+                        "vigor",
+                        "acepta",
+                        "conforme",
+                        "ajustará",
+                        "ajustara",
+                        "reintegrar"
+                    ]
+                },
+                {
+                    "tipoReconocimiento": "reconocerParrafo",
+                    "codigoServicio": "servicio_npl",
+                    "asiertos": "5",
+                    "longitud": "0",
+                    "entidad": "HIPOTECA",
+                    "espacioEntrePalabras": "120",
+                    "valoresContenido": [
+                        "hipoteca",
+                        "favor",
+                        "Obligaciones",
+                        "obligación",
+                        "obligacion",
+                        "Constitucion",
+                        "constitución",
+                        "garantizar",
+                        "garantiza",
+                        "Virtud",
+                        "relacionado",
+                        "antecedentes",
+                        "cumplimiento",
+                        "letra",
+                        "reproducidos",
+                        "linderos",
+                        "insertasen",
+                        "determinados",
+                        "constituyen",
+                        "constituye",
+                        "superficie",
+                        "contrae",
+                        "contraen",
+                        "apertura",
+                        "obligado"
+                    ]
+                },
+                {
+                    "tipoReconocimiento": "reconocerParrafo",
+                    "codigoServicio": "servicio_npl",
+                    "asiertos": "4",
+                    "longitud": "0",
+                    "entidad": "VENCIMIENTO_ANTICIPADO",
+                    "espacioEntrePalabras": "100",
+                    "valoresContenido": [
+                        "causa",
+                        "causas",
+                        "causal",
+                        "causales",
+                        "rescision",
+                        "rescisión",
+                        "vencimiento",
+                        "vencido",
+                        "vencida",
+                        "anticipado",
+                        "anticipadamente",
+                        "términos",
+                        "terminos",
+                        "término",
+                        "aviso",
+                        "previo",
+                        "notificación",
+                        "notificacion",
+                        "exigir",
+                        "podrá",
+                        "podra",
+                        "además",
+                        "ademas",
+                        "haya"
+                    ]
+                },
+                {
+                    "tipoReconocimiento": "reconocerParrafo",
+                    "codigoServicio": "servicio_npl",
+                    "asiertos": "2",
+                    "longitud": "0",
+                    "entidad": "DOMICILIO",
+                    "espacioEntrePalabras": "50",
+                    "valoresContenido": [
+                        "catastral",
+                        "predio",
+                        "predios",
+                        "obligación",
+                        "obligaciones",
+                        "marcada",
+                        "marcado",
+                        "construida",
+                        "siguientes",
+                        "ubicado",
+                        "ubicada",
+                        "colindancia",
+                        "colindancias",
+                        "notificación",
+                        "notificacion",
+                        "notificaciones",
+                        "domicilio",
+                        "domicilios",
+                        "sociedad"
+                    ]
+                },
+                {
+                    "tipoReconocimiento": "reconocerParrafo",
+                    "codigoServicio": "servicio_npl",
+                    "asiertos": "7",
+                    "longitud": "0",
+                    "entidad": "DESCUENTO",
+                    "espacioEntrePalabras": "140",
+                    "valoresContenido": [
+                        "amortizacion",
+                        "amortización",
+                        "amortizaciones",
+                        "forma",
+                        "obliga",
+                        "descuento",
+                        "régimen",
+                        "regimen",
+                        "devenguen",
+                        "términos",
+                        "terminos",
+                        "cuota",
+                        "cuotas",
+                        "especial",
+                        "punto",
+                        "minimo",
+                        "mínimo",
+                        "equivalente",
+                        "percibiere",
+                        "percibiera",
+                        "vinculado",
+                        "veces"
+                    ]
+                },
+                {
+                    "tipoReconocimiento": "reconocerParrafo",
+                    "codigoServicio": "servicio_npl",
+                    "asiertos": "7",
+                    "longitud": "0",
+                    "entidad": "CREDITO",
+                    "espacioEntrePalabras": "150",
+                    "valoresContenido": [
+                        "forma",
+                        "simple",
+                        "equivalen",
+                        "equivale",
+                        "veces",
+                        "contrato",
+                        "cantidad",
+                        "apertura",
+                        "importe",
+                        "disposicion",
+                        "disposición",
+                        "entrega",
+                        "otorgado",
+                        "otorga",
+                        "otorgamiento",
+                        "acto",
+                        "presente",
+                        "financieras",
+                        "definitivas",
+                        "definitiva",
+                        "quedado",
+                        "proemio"
+                    ]
+                },
+                {
+                    "tipoReconocimiento": "reconocerParrafo",
+                    "codigoServicio": "servicio_npl",
+                    "asiertos": "7",
+                    "longitud": "0",
+                    "entidad": "INT_ORDINARIO",
+                    "espacioEntrePalabras": "   100",
+                    "valoresContenido": [
+                        "tasa",
+                        "interés",
+                        "interes",
+                        "ordinario",
+                        "anual",
+                        "punto",
+                        "fija",
+                        "ordinarios",
+                        "capital",
+                        "pactado",
+                        "causara",
+                        "causará",
+                        "disposicion",
+                        "disposición",
+                        "conforme",
+                        "hubiere",
+                        "aplicando",
+                        "determinarán",
+                        "determinaran",
+                        "totalmente",
+                        "devengará",
+                        "devengara"
+                    ]
+                },
+                {
+                    "tipoReconocimiento": "reconocerParrafo",
+                    "codigoServicio": "servicio_npl",
+                    "asiertos": "3",
+                    "longitud": "0",
+                    "entidad": "INT_MORATORIO",
+                    "espacioEntrePalabras": "30",
+                    "valoresContenido": [
+                        "tasa",
+                        "interés",
+                        "interes",
+                        "moratorio",
+                        "trabajador"
+                    ]
+                },
+                {
+                    "tipoReconocimiento": "reconocerParrafo",
+                    "codigoServicio": "servicio_npl",
+                    "asiertos": "3",
+                    "longitud": "200",
+                    "entidad": "DEFINICIONES",
+                    "espacioEntrePalabras": "30",
+                    "valoresContenido": [
+                        "primera",
+                        "definiciones",
+                        "efectos",
+                        "estipulado"
+                    ]
+                }
+            ]
+        }
+    ]
+}

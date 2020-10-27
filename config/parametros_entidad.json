@@ -1,0 +1,63 @@
+{
+  "parametrosEntidades" : [
+    {
+      "posicion" : "0",
+      "entidad" : "DELEGACION",
+      "valoresFinales" : [
+        "DEL INSTITUTO",
+        "DEL INSTITUT"
+      ],
+      "valoresIniciales" : [
+        "DELEGACIÓN REGIONAL DE"
+      ],
+      "tipoReconocimiento" : "reconocerEntidadEntreTexto"
+    },
+    {
+      "posicion" : "0",
+      "entidad" : "NOMBRE_ACREDITADO",
+      "valoresFinales" : [
+        "COINCID",
+        "COINCIDE"
+      ],
+      "valoresIniciales" : [
+        "DERECHOHABIENTE ACREDITADO"
+      ],
+      "tipoReconocimiento" : "reconocerEntidadEntreTexto"
+    },
+    {
+      "posicion" : "1",
+      "longitud" : 20,
+      "entidad" : "CONDICIONES _CREDITO",
+      "valoresFinales" : [
+        ""
+      ],
+      "valoresIniciales" : [
+        "MONTO DE OTORGAMIENTO"
+      ],
+      "tipoReconocimiento" : "reconocerEntidadSiguiente"
+    },
+    {
+      "posicion" : "0",
+      "entidad" : "MESES_ADEUDADOS_CERTIFICADO_ADEUDOS",
+      "valoresFinales" : [
+        ""
+      ],
+      "valoresIniciales" : [
+        "OMISOS ACTUALES"
+      ],
+      "tipoReconocimiento" : "reconocerEntidadSiguiente"
+    },
+    {
+      "valoresFinales" : [
+        ""
+      ],
+      "longitud" : 30,
+      "entidad" : "FECHA_EMISION",
+      "expresionRegular" : "\\d{1,2}\\s{1,2}\\w{1,2}\\s{1,2}\\w{1,12}\\s{1,2}\\w{1,2}\\s{1,2}\\d{4}",
+      "valoresIniciales" : [
+        "FECHA DE EMISIÓN"
+      ],
+      "tipoReconocimiento" : "reconocerEntidadExpresionRegular"
+    }
+  ]
+}
