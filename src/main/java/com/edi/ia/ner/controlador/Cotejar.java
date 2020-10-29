@@ -3,6 +3,7 @@ package com.edi.ia.ner.controlador;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -426,36 +427,66 @@ public class Cotejar {
 
 	public ResultadoVO reconocerEntidadMedidasColindancias(ParametrosEntidadVO parametrosEntidadVO, String texto) {
 
-		int indiceAnterior = -1;
-
 		ArrayList<ResultadoVO> listaIndicesResultadosVO = new ArrayList<ResultadoVO>();
+		boolean colindanciasAgrupadas = false;
 
-		// Mapa con lista priorizada de los valores o expresiones regulares que se deben indentificar en el
+		// Mapa con lista priorizada de los valores o expresiones regulares que se deben
+		// indentificar en el
 		// texto
 		Map<String, ArrayList<String>> valoresPorPrioridad = utilidad
 				.getValoresPorPrioridad(parametrosEntidadVO.getValoresContenido());
+		
+		ResultadoVO indicesResultadoOmitir = this.getIndices(parametrosEntidadVO.getValoresOmitir(), texto);
 
 		// Recorrer expreciones regulares por prioridad
 		for (Map.Entry<String, ArrayList<String>> valores : valoresPorPrioridad.entrySet()) {
 
 			// Obtiene los resultados en mapas ordenados por Prioridad
-			ResultadoVO indicesResultadosVO = this.obtenerIndices(valores.getValue(), texto);
+			ResultadoVO indicesResultadosVO = this.getIndices(valores.getValue(), texto);
+			indicesResultadosVO.setGrupo(valores.getKey());
 
 			listaIndicesResultadosVO.add(indicesResultadosVO);
-		}
-		//Quitar indices de valores a omitir
-		ResultadoVO indicesResultadoOmitir = this.obtenerIndices(parametrosEntidadVO.getValoresOmitir(), texto);
-		this.omitirValores(listaIndicesResultadosVO, indicesResultadoOmitir);
-		
-		
-		// Obtener las colindancias agrupadas en la lista del objeto ResultadoVO
-		ResultadoVO resultadoFinal = this.obtenerResultadoColindancias(listaIndicesResultadosVO,
-				parametrosEntidadVO.getLongitud(), texto);
+			///////// Prueba
+			this.omitirValores(listaIndicesResultadosVO, indicesResultadoOmitir);
+			if (indicesResultadosVO.getMapResultado().size() > 3 && indicesResultadosVO.getGrupo().equals("1")) {
+				if (indicesResultadosVO.getMapResultado().size() % 2 != 0) {
+					this.setUtimoIndice(listaIndicesResultadosVO);
+					this.setIndiceFinalDeUltimaColindacia(indicesResultadosVO, parametrosEntidadVO, texto);
+				}
+				colindanciasAgrupadas = true;
 
-		indiceAnterior = -1;
+			}
+
+			
+		}
+		// Quitar indices de valores a omitir
+		
+		this.omitirValores(listaIndicesResultadosVO, indicesResultadoOmitir);
+
+		//Quitar los indices que sen mayores al mayor indice del siguiente grupo
+		if (colindanciasAgrupadas == false) {
+			this.onitirIndiceMayorSigueinteGrupo(listaIndicesResultadosVO, "1");
+		}
+
+		// Obtener las colindancias agrupadas en la lista del objeto ResultadoVO
+		ResultadoVO resultadoFinal = this.unirMedidasColindancias(listaIndicesResultadosVO,
+				parametrosEntidadVO.getLongitud(),  texto);
+
+		// Identificar indice Final y obtener la ultima colindancia
+		if (colindanciasAgrupadas == false) {
+			this.setUltimaMedidaColindancia(resultadoFinal, parametrosEntidadVO, texto);
+		}
+
+		return resultadoFinal;
+	}
+
+	public void setUltimaMedidaColindancia(ResultadoVO resultadoFinal, ParametrosEntidadVO parametrosEntidadVO,
+			String texto) {
+
+		int indiceAnterior = -1;
 		boolean existeCaracterDeTermino = false;
 		// Identificar indice Final y obtener la ultima colindancia
-		ResultadoVO resultadoIndicesFinales = this.obtenerIndices(parametrosEntidadVO.getValoresFinales(), texto);
+		ResultadoVO resultadoIndicesFinales = this.getIndices(parametrosEntidadVO.getValoresFinales(), texto);
 
 		for (Map.Entry<Integer, String> indice : resultadoIndicesFinales.getMapResultado().entrySet()) {
 
@@ -465,6 +496,7 @@ public class Cotejar {
 					resultadoFinal.getListaResutado()
 							.add(texto.substring(resultadoFinal.getUltimoIndice(), indice.getKey()));
 					existeCaracterDeTermino = true;
+
 					break;
 				}
 			}
@@ -475,13 +507,49 @@ public class Cotejar {
 			if (texto.indexOf(" ", resultadoFinal.getUltimoIndice() + 100) > resultadoFinal.getUltimoIndice()) {
 				resultadoFinal.getListaResutado().add(texto.substring(resultadoFinal.getUltimoIndice(),
 						texto.indexOf(" ", resultadoFinal.getUltimoIndice() + 100)));
+
 			} else {
 				resultadoFinal.getListaResutado()
 						.add(texto.substring(resultadoFinal.getUltimoIndice(), texto.length()));
+
+			}
+		}
+	}
+
+	public void setIndiceFinalDeUltimaColindacia(ResultadoVO rsultadoVO, ParametrosEntidadVO parametrosEntidadVO, String texto) {
+
+		int indiceAnterior = -1;
+		Integer indiceFinal = -1;
+		boolean existeCaracterDeTermino = false;
+		// Identificar indice Final y obtener la ultima colindancia
+		ResultadoVO resultadoIndicesFinales = this.getIndices(parametrosEntidadVO.getValoresFinales(), texto);
+
+		for (Map.Entry<Integer, String> indice : resultadoIndicesFinales.getMapResultado().entrySet()) {
+
+			if (indice.getKey() > rsultadoVO.getUltimoIndice()) {
+				if (indice.getKey() - indiceAnterior > parametrosEntidadVO.getLongitud()) {
+					indiceFinal = indice.getKey();
+					existeCaracterDeTermino = true;
+					break;
+				}
+			}
+			indiceAnterior = indice.getKey();
+		}
+		if (!existeCaracterDeTermino) {
+
+			if (texto.indexOf(" ", rsultadoVO.getUltimoIndice() + 100) > rsultadoVO.getUltimoIndice()) {
+				indiceFinal = texto.indexOf(" ", rsultadoVO.getUltimoIndice() + 100);
+
+			} else {
+				indiceFinal = texto.length();
+
 			}
 		}
 
-		return resultadoFinal;
+		if (indiceFinal != -1) {
+			rsultadoVO.getMapResultado().put(indiceFinal, " ");
+			rsultadoVO.setUltimoIndice(indiceFinal);
+		}
 	}
 
 	/**
@@ -509,50 +577,89 @@ public class Cotejar {
 	 * } resultadoTotal.setUltimoIndice(ultimoIndice); } return resultadoTotal; }
 	 **/
 
-	
 	public void omitirValores(ArrayList<ResultadoVO> listaIndicesResultadosVO, ResultadoVO indicesResultadoOmitir) {
-		
+
 		for (ResultadoVO resultadoVO : listaIndicesResultadosVO) {
 			ArrayList<Integer> indicesOmitir = new ArrayList<Integer>();
 			for (Map.Entry<Integer, String> valores : resultadoVO.getMapResultado().entrySet()) {
 				for (Map.Entry<Integer, String> valoresOmitir : indicesResultadoOmitir.getMapResultado().entrySet()) {
-					
-					if(valoresOmitir.getKey() > valores.getKey()-20 && valoresOmitir.getKey() < valores.getKey()+20) {
-						indicesOmitir.add(valores.getKey());	
+
+					if (valoresOmitir.getKey() > valores.getKey() - 20
+							&& valoresOmitir.getKey() < valores.getKey() + 20) {
+						indicesOmitir.add(valores.getKey());
 					}
+					
 				}
 			}
 			for (Integer i : indicesOmitir) {
 				resultadoVO.getMapResultado().remove(i);
-				}
+			}
 		}
-		
-		
-		
+	}
+
+	public void onitirIndiceMayorSigueinteGrupo(ArrayList<ResultadoVO> listaIndicesResultadosVO, String grupo) {
+		int i = 0;
+		ArrayList<Integer> indicesOmitir = new ArrayList<Integer>();
+		Integer ultimoIndiceSiguiente = -1;
+		for (ResultadoVO resultadoVO : listaIndicesResultadosVO) {
+			if (resultadoVO.getGrupo().equals(grupo)) {
+				if (listaIndicesResultadosVO.size() >= i + 1) {
+					ResultadoVO siquieteResultadoVO = listaIndicesResultadosVO.get(i + 1);
+					for (Map.Entry<Integer, String> seguientesValores : siquieteResultadoVO.getMapResultado()
+							.entrySet()) {
+						ultimoIndiceSiguiente = seguientesValores.getKey();
+					}
+					for (Map.Entry<Integer, String> valores : resultadoVO.getMapResultado().entrySet()) {
+						
+						if (valores.getKey() > ultimoIndiceSiguiente) {
+							indicesOmitir.add(valores.getKey());
+						}
+						else resultadoVO.setUltimoIndice(valores.getKey());
+					}
+
+				}
+
+				for (Integer indice : indicesOmitir) {
+					resultadoVO.getMapResultado().remove(indice);
+				}
+				break;
+			}
+
+			i++;
+		}
+
 	}
 	
-	public ResultadoVO obtenerResultadoColindancias(ArrayList<ResultadoVO> listaIndicesResultadosVO, int longitud,
-			String texto) {
+	public void setUtimoIndice(ArrayList<ResultadoVO> listaIndicesResultadosVO) {
+		for (ResultadoVO resultadoVO : listaIndicesResultadosVO) {
+			for (Map.Entry<Integer, String> valores : resultadoVO.getMapResultado().entrySet()) {
+			    resultadoVO.setUltimoIndice(valores.getKey());
+			}
+		}
+		
+	}
+
+	public ResultadoVO unirMedidasColindancias(ArrayList<ResultadoVO> listaIndicesResultadosVO, int longitud, String texto) {
 
 		ArrayList<String> listaResutadoTotal = new ArrayList<String>();
 		ResultadoVO resultadoTotal = new ResultadoVO();
 		resultadoTotal.setListaResutado(listaResutadoTotal);
 
 		for (ResultadoVO resultadoVO : listaIndicesResultadosVO) {
+
 			int indiceAnterior = -1;
 			System.out.println("Grupo: " + resultadoVO.getGrupo());
 			for (Map.Entry<Integer, String> valores : resultadoVO.getMapResultado().entrySet()) {
 				{
-					
-						// Validar que el indice actual sea mayor que el indice del grupo anterior, para
-						// que no se traslapen los valores
-						if (valores.getKey() > resultadoTotal.getUltimoIndice()) {
 
-							System.out
-									.println("valores.getKey(): " + valores.getKey() + " Dato: " + valores.getValue());
-							System.out.println("resultadoTotal.setUltimoIndice: " + resultadoTotal.getUltimoIndice());
-							if (resultadoVO.getMapResultado().size() > 1) {
-								if (indiceAnterior != -1) {
+					// Validar que el indice actual sea mayor que el indice del grupo anterior, para
+					// que no se traslapen los valores
+					if (valores.getKey() > resultadoTotal.getUltimoIndice()) {
+
+						System.out.println("valores.getKey(): " + valores.getKey() + " Dato: " + valores.getValue());
+						System.out.println("resultadoTotal.setUltimoIndice: " + resultadoTotal.getUltimoIndice());
+						if (resultadoVO.getMapResultado().size() > 1) {
+							if (indiceAnterior != -1) {
 								// Validar que se cumpla una separación minima entre los indices
 								if (valores.getKey() - indiceAnterior > longitud) {
 									// Fijar resultados encontrados en el texto
@@ -565,23 +672,25 @@ public class Cotejar {
 									resultadoVO.setUltimoIndice(valores.getKey());
 
 								}
-							}else {
+							} else {
 								indiceAnterior = valores.getKey();
 								System.out.println("indiceAnterior: " + indiceAnterior);
 							}
 						}
-					} 
+					}
 				}
 			}
 			// Fija el ultimo indice al resultado total, necesario para completar el ultimo
 			// dato
-
-			resultadoTotal.setUltimoIndice(resultadoVO.getUltimoIndice());
+			if (resultadoTotal.getUltimoIndice() < resultadoVO.getUltimoIndice() ) {
+				resultadoTotal.setUltimoIndice(resultadoVO.getUltimoIndice());
+				System.out.println("resultadoTotal.setUltimoIndice: " + resultadoVO.getUltimoIndice());
+			}
 		}
 		return resultadoTotal;
 	}
 
-	public ResultadoVO obtenerIndices(ArrayList<String> listaValores, String texto) {
+	public ResultadoVO getIndices(ArrayList<String> listaValores, String texto) {
 
 		Map<Integer, String> mapResultado = new TreeMap<Integer, String>();
 		Pattern regex;
@@ -593,6 +702,7 @@ public class Cotejar {
 			match = regex.matcher(texto);
 			while (match.find()) {
 				mapResultado.put(match.start(), match.group(0));
+				resultadoVO.setUltimoIndice(match.start());
 
 			}
 		}

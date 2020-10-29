@@ -14,7 +14,6 @@ import com.edi.ia.ner.modelo.ParametrosConfiguracionVO;
 import com.edi.ia.ner.modelo.ParametrosEntidadVO;
 import com.google.gson.JsonSyntaxException;
 
-
 public class Utilidad {
 
 	public static String stackTraceToString(Throwable e) {
@@ -35,7 +34,7 @@ public class Utilidad {
 
 		return texto;
 	}
-	
+
 	public String darFormatoNombre(String nombre) {
 		nombre = nombre.replaceAll("de", "");
 		nombre = nombre.replaceAll("DE", "");
@@ -50,18 +49,17 @@ public class Utilidad {
 
 		return nombre;
 	}
-	
+
 	public String limpiarAcentos(String texto) {
-		
-		String textoSinAcentos ="";
-		
+
+		String textoSinAcentos = "";
+
 		textoSinAcentos = Normalizer.normalize(texto, Normalizer.Form.NFD);
 		textoSinAcentos = textoSinAcentos.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-        
+
 		return textoSinAcentos;
-		
+
 	}
-	
 
 	public ModelosNerVO obtenerModelosNer() throws JsonSyntaxException, IOException {
 		Archivo archivo = new Archivo();
@@ -90,22 +88,23 @@ public class Utilidad {
 
 		return texto;
 	}
-	
+
 	public String removerValoresAlFinal(ArrayList<String> valoresRemover, String texto) {
-		
+
 		int index = -1;
-		
-		
-		for(String valorRemover : valoresRemover) {
-			index = texto.lastIndexOf(valorRemover);
-			if(index != -1) {
-			
-				if(texto.length()-index == valorRemover.length()) {
-					texto = texto.replaceAll(valorRemover,"");
+
+		if (valoresRemover != null) {
+			for (String valorRemover : valoresRemover) {
+				index = texto.lastIndexOf(valorRemover);
+				if (index != -1) {
+
+					if (texto.length() - index == valorRemover.length()) {
+						texto = texto.substring(0, index);
+					}
 				}
 			}
 		}
-		
+
 		return texto;
 	}
 
@@ -116,31 +115,34 @@ public class Utilidad {
 		// Fijar los codigos de las entiddes del conyuge
 		for (EntidadVO entidadVO : ListaEntidadVO) {
 			if (codigosEntidadAcreditado.indexOf(entidadVO.getCodigo()) != -1)
-				entidadVO.setCodigoConyuge(codigosEntidadConyuge.get(codigosEntidadAcreditado.indexOf(entidadVO.getCodigo())));
+				entidadVO.setCodigoConyuge(
+						codigosEntidadConyuge.get(codigosEntidadAcreditado.indexOf(entidadVO.getCodigo())));
 			if (codigosEntidadConyuge.indexOf(entidadVO.getCodigo()) != -1)
-				entidadVO.setCodigoConyuge(codigosEntidadAcreditado.get(codigosEntidadConyuge.indexOf(entidadVO.getCodigo())));
+				entidadVO.setCodigoConyuge(
+						codigosEntidadAcreditado.get(codigosEntidadConyuge.indexOf(entidadVO.getCodigo())));
 		}
 
 		return ListaEntidadVO;
 	}
-	
-	public Map<String, ArrayList<String>> getValoresPorPrioridad(ArrayList<String> ListaValores)  {
+
+	public Map<String, ArrayList<String>> getValoresPorPrioridad(ArrayList<String> ListaValores) {
 
 		Map<String, ArrayList<String>> map = new TreeMap<String, ArrayList<String>>();
-		//Se espera que cada valor de la lista tenga el formato <numero que indica la riorización><;><valor a buscar en el texto>
+		// Se espera que cada valor de la lista tenga el formato <numero que indica la
+		// riorización><;><valor a buscar en el texto>
 		for (String valor : ListaValores) {
 			ArrayList<String> list = new ArrayList<String>();
-			String [] arregloValor = valor.split(";");
-			if(arregloValor.length == 2) {
+			String[] arregloValor = valor.split(";");
+			if (arregloValor.length == 2) {
 				list.add(arregloValor[1]);
 				list = map.putIfAbsent(arregloValor[0], list);
 
 				if (list != null) {
 					list.add(arregloValor[1]);
 				}
-				
+
 			}
-			
+
 		}
 		return map;
 	}

@@ -11,6 +11,11 @@ public class ResultadoVO {
 	private int primerIndice;
 	private int ultimoIndice;
 	
+	
+	
+	public ResultadoVO() {
+		this.listaResutado = new ArrayList<String>();;
+	}
 	public int getPrimerIndice() {
 		return primerIndice;
 	}

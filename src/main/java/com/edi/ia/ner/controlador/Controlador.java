@@ -362,8 +362,9 @@ public class Controlador implements ControladorServicio {
 		} else {
 			if (entidadVO.getValor() != " ") {
 				entidadVO.setValor(entidadVO.getValor().trim());
-				
+				System.out.println("antes: entidadVO.setValor: "+entidadVO.getValor());
 				entidadVO.setValor(utilidad.removerValoresAlFinal(parametrosEntidadVO.getValoresRemoverAlFinal(), entidadVO.getValor()));
+				System.out.println("despues: entidadVO.setValor: "+entidadVO.getValor());
 			}
 
 		}
@@ -376,9 +377,9 @@ public class Controlador implements ControladorServicio {
 		ArrayList<String> listaentidadesRelacionadas = new ArrayList<String>();
 		listaentidadesRelacionadas.addAll(Arrays.asList(parametrosEntidadVO.getEntidadRelacionadas().split(",")));
 		int i = 0;
-		for (String valor : resultadoVO.getListaResutado()) {
+		for (String valor : resultadoVO.getListaResutado() ) {
 
-			if (listaentidadesRelacionadas.size() > i) {
+			if (listaentidadesRelacionadas.size() >= i) {
 				for (EntidadVO entidadVO : listaEntidadesVO) {
 					if (entidadVO.getEntidad().equals(listaentidadesRelacionadas.get(i))) {
 						entidadVO.setValor(valor);
