@@ -448,9 +448,9 @@ public class Cotejar {
 			listaIndicesResultadosVO.add(indicesResultadosVO);
 			///////// Prueba
 			this.omitirValores(listaIndicesResultadosVO, indicesResultadoOmitir);
+			this.setUtimoIndice(listaIndicesResultadosVO);
 			if (indicesResultadosVO.getMapResultado().size() > 3 && indicesResultadosVO.getGrupo().equals("1")) {
 				if (indicesResultadosVO.getMapResultado().size() % 2 != 0) {
-					this.setUtimoIndice(listaIndicesResultadosVO);
 					this.setIndiceFinalDeUltimaColindacia(indicesResultadosVO, parametrosEntidadVO, texto);
 				}
 				colindanciasAgrupadas = true;
