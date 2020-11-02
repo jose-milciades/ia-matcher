@@ -285,6 +285,8 @@ public class Controlador implements ControladorServicio {
 			valorEntidad = cotejar.reconocerEntidadNumeroDecimal(parametrosEntidadVO, texto);
 		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadEntreTextoExpresionRegular")) {
 			valorEntidad = cotejar.reconocerEntidadEntreTextoExpresionRegular(parametrosEntidadVO, texto);
+		}else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadSuperficie")) {
+			valorEntidad = cotejar.reconocerEntidadSuperficie(parametrosEntidadVO, texto);
 		}
 
 		if (valorEntidad != null) {

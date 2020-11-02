@@ -95,7 +95,7 @@ public class Utilidad {
 
 		if (valoresRemover != null) {
 			for (String valorRemover : valoresRemover) {
-				index = texto.lastIndexOf(valorRemover);
+				index = texto.toLowerCase().lastIndexOf(valorRemover.toLowerCase());
 				if (index != -1) {
 
 					if (texto.length() - index == valorRemover.length()) {
