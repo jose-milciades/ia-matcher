@@ -171,9 +171,9 @@ public class Controlador implements ControladorServicio {
 					"ner-grupo-entidades");
 			for (GrupoEntidadVO grupoEntidadVO : grupoEntidad.getGrupoEntidades()) {
 				
-				String texto = grupoEntidad.getTextoPaginaActual();
+				String texto = grupoEntidad.getTexto();
 				if(grupoEntidadVO.isEnviaTextoSiguienteHoja()) {
-					texto = grupoEntidad.getTexto();
+					texto = grupoEntidad.getTextoPaginaActual();
 				}
 
 				// obtiene los parametros de la entidad a busrcar
