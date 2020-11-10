@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -15,6 +16,7 @@ import com.edi.ia.ner.modelo.DocumentoVO;
 import com.edi.ia.ner.modelo.EntidadVO;
 import com.edi.ia.ner.modelo.GrupoEntidadVO;
 import com.edi.ia.ner.modelo.GrupoEntidadesVO;
+import com.edi.ia.ner.modelo.ModeloVO;
 import com.edi.ia.ner.modelo.ModelosNerVO;
 import com.edi.ia.ner.modelo.ParametrosConfiguracionVO;
 import com.edi.ia.ner.modelo.ParametrosEntidadVO;
@@ -151,7 +153,11 @@ public class Controlador implements ControladorServicio {
 
 	@Override
 	public GrupoEntidadesVO reconocerParrafo(GrupoEntidadesVO grupoEntidad) {
+		
+		
+		
 		grupoEntidad.setTexto(utilidad.darFormatoTexto(grupoEntidad.getTexto()));
+		grupoEntidad.setTextoPaginaActual(utilidad.darFormatoTexto(grupoEntidad.getTextoPaginaActual()));
 
 		ArrayList<String> entidadesPreviamenteProcesadas = new ArrayList<String>();
 
@@ -164,6 +170,11 @@ public class Controlador implements ControladorServicio {
 			Map<String, ParametrosEntidadVO> mapParametrosEntidadVO = utilidad.obtenerParametrosEntidad(modelosNerVO,
 					"ner-grupo-entidades");
 			for (GrupoEntidadVO grupoEntidadVO : grupoEntidad.getGrupoEntidades()) {
+				
+				String texto = grupoEntidad.getTextoPaginaActual();
+				if(grupoEntidadVO.isEnviaTextoSiguienteHoja()) {
+					texto = grupoEntidad.getTexto();
+				}
 
 				// obtiene los parametros de la entidad a busrcar
 				ParametrosEntidadVO parametrosEntidadVO = mapParametrosEntidadVO.get(grupoEntidadVO.getGrupoEntidad());
@@ -175,10 +186,10 @@ public class Controlador implements ControladorServicio {
 					// busqueda de la entidad, cero indica hacer la busqueda sin importar la
 					// longitud del tecto
 					if (parametrosEntidadVO.getCantidadMinimaCaracteres() == 0
-							|| grupoEntidad.getTexto().length() >= parametrosEntidadVO.getCantidadMinimaCaracteres()) {
-						System.out.println("Cantidad de caracteres del texto: " + grupoEntidad.getTexto().length());
+							|| texto.length() >= parametrosEntidadVO.getCantidadMinimaCaracteres()) {
+						System.out.println("Cantidad de caracteres del texto: " + texto.length());
 						// Buscar Valor de la entidad
-						grupoEntidadVO.setValor(this.buscarValorEntidad(parametrosEntidadVO, grupoEntidad.getTexto()));
+						grupoEntidadVO.setValor(this.buscarValorEntidad(parametrosEntidadVO, texto));
 						grupoEntidadVO.setCodigoServicio(parametrosEntidadVO.getCodigoServicio());
 					}
 				}
@@ -192,6 +203,7 @@ public class Controlador implements ControladorServicio {
 			e.printStackTrace();
 		}
 		grupoEntidad.setTexto(null);
+		grupoEntidad.setTextoPaginaActual(null);
 		return grupoEntidad;
 
 	}
@@ -249,7 +261,17 @@ public class Controlador implements ControladorServicio {
 						entidadVO.setConfianza(95);
 					}
 				}
+				//Validar si reconocio al menos la entidad credito en pesos del anexo_b para retornar valores de los contrario limpia los valores.
+				List<String> codigosEntidadAcreditado = Arrays.asList(VariablesGlobales.CODIGOS_ENTIDAD_ACREDITADO.split(" "));
+				if(this.validarMinimoEntidadesReconocidasAnexoB(modeloVO, codigosEntidadAcreditado, VariablesGlobales.CODIGO_CREDITO_PESOS_ACREDITADO)) {
+					this.limpiarDatosConyugeAnexoB(modeloVO);
+				}
+				List<String> codigosEntidadConyuge = Arrays.asList(VariablesGlobales.CODIGOS_ENTIDAD_CONYUGE.split(" "));
+				this.validarMinimoEntidadesReconocidasAnexoB(modeloVO, codigosEntidadConyuge, VariablesGlobales.CODIGO_CREDITO_PESOS_CONYUGE);
+				
+				
 			});
+			
 
 		} catch (JsonSyntaxException | IOException e) {
 			// TODO Auto-generated catch block
@@ -257,6 +279,38 @@ public class Controlador implements ControladorServicio {
 		}
 		documento.setTexto(null);
 		return documento;
+	}
+	
+	private boolean validarMinimoEntidadesReconocidasAnexoB(ModeloVO modeloVO, List<String> codigosEntidad, String CodigoCreditoPesos) {
+		
+		boolean limpiarEntidades = false;
+		
+		for (EntidadVO entidadVO : modeloVO.getEntidades()) {
+			if(entidadVO.getValor()!=null) {
+			if(entidadVO.getCodigo().equals(CodigoCreditoPesos) && (entidadVO.getValor().equals(" ")||entidadVO.getValor().equals(""))) { 
+				limpiarEntidades = true;
+				break;
+			}
+		}}
+		
+		if(limpiarEntidades) {
+			for (EntidadVO entidadVO : modeloVO.getEntidades()) {
+				if(codigosEntidad.contains(entidadVO.getCodigo())){
+					entidadVO.setValor(null);
+				}
+			}
+			
+		}
+		return limpiarEntidades;
+	}
+	
+	public void limpiarDatosConyugeAnexoB(ModeloVO modeloVO) {
+		List<String> codigosEntidadConyuge = Arrays.asList(VariablesGlobales.CODIGOS_ENTIDAD_CONYUGE.split(" "));
+		for (EntidadVO entidadVO : modeloVO.getEntidades()) {
+			if(codigosEntidadConyuge.contains(entidadVO.getCodigo())){
+				entidadVO.setValor(null);
+			}
+		}
 	}
 
 	private String buscarValorEntidad(ParametrosEntidadVO parametrosEntidadVO, String texto) {

@@ -10,6 +10,7 @@ public class ParametrosEntidadVO {
 	private int posicion;
 	private int espacioEntrePalabras;
 	private int longitud;
+	private int longitudGrupoColindancia;
 	private int asiertos;
 	private int cantidadMinimaCaracteres;
 	private String expresionRegular;
@@ -26,6 +27,14 @@ public class ParametrosEntidadVO {
 	
 	
 	
+	public int getLongitudGrupoColindancia() {
+		return longitudGrupoColindancia;
+	}
+
+	public void setLongitudGrupoColindancia(int longitudGrupoColindancia) {
+		this.longitudGrupoColindancia = longitudGrupoColindancia;
+	}
+
 	public ArrayList<String> getValoresRemoverAlFinal() {
 		return valoresRemoverAlFinal;
 	}

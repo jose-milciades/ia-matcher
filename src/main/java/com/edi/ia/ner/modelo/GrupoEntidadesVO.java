@@ -7,9 +7,16 @@ public class GrupoEntidadesVO {
 	private String texto;
 	private int pagina;
 	private String idDocumentoProcesado;
+	private String textoPaginaActual;
 	ArrayList<GrupoEntidadVO> grupoEntidades;
 	
 	
+	public String getTextoPaginaActual() {
+		return textoPaginaActual;
+	}
+	public void setTextoPaginaActual(String textoPaginaActual) {
+		this.textoPaginaActual = textoPaginaActual;
+	}
 	public String getTexto() {
 		return texto;
 	}

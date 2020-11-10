@@ -531,9 +531,7 @@ public class Cotejar {
 				this.setIndiceFinalDeUltimaColindacia(indicesResultadosVO, parametrosEntidadVO, texto);
 				// }
 				colindanciasAgrupadas = true;
-
 			}
-
 		}
 		// Quitar indices de valores a omitir
 
@@ -546,12 +544,12 @@ public class Cotejar {
 
 		// Obtener las colindancias agrupadas en la lista del objeto ResultadoVO
 		ResultadoVO resultadoFinal = this.unirMedidasColindancias(listaIndicesResultadosVO,
-				parametrosEntidadVO.getLongitud(), texto);
+				parametrosEntidadVO, texto);
 
 		// Identificar indice Final y obtener la ultima colindancia
-		if (colindanciasAgrupadas == false) {
+		//if (colindanciasAgrupadas == false) {
 			this.setUltimaMedidaColindancia(resultadoFinal, parametrosEntidadVO, texto);
-		}
+		//}
 
 		return resultadoFinal;
 	}
@@ -564,6 +562,7 @@ public class Cotejar {
 		// Identificar indice Final y obtener la ultima colindancia
 		ResultadoVO resultadoIndicesFinales = this.getIndices(parametrosEntidadVO.getValoresFinales(), texto);
 
+		
 		for (Map.Entry<Integer, String> indice : resultadoIndicesFinales.getMapResultado().entrySet()) {
 
 			if (indice.getKey() > resultadoFinal.getUltimoIndice()) {
@@ -598,13 +597,17 @@ public class Cotejar {
 		int indiceAnterior = -1;
 		Integer indiceFinal = -1;
 		boolean existeCaracterDeTermino = false;
+		int longitud = parametrosEntidadVO.getLongitud();
+		if(rsultadoVO.getGrupo().equals("1")) {
+			longitud = parametrosEntidadVO.getLongitudGrupoColindancia();
+		}
 		// Identificar indice Final y obtener la ultima colindancia
 		ResultadoVO resultadoIndicesFinales = this.getIndices(parametrosEntidadVO.getValoresFinales(), texto);
 
 		for (Map.Entry<Integer, String> indice : resultadoIndicesFinales.getMapResultado().entrySet()) {
 
 			if (indice.getKey() > rsultadoVO.getUltimoIndice()) {
-				if (indice.getKey() - indiceAnterior > parametrosEntidadVO.getLongitud()) {
+				if (indice.getKey() - indiceAnterior > longitud) {
 					indiceFinal = indice.getKey();
 					existeCaracterDeTermino = true;
 					break;
@@ -691,15 +694,19 @@ public class Cotejar {
 
 	}
 
-	public ResultadoVO unirMedidasColindancias(ArrayList<ResultadoVO> listaIndicesResultadosVO, int longitud,
+	public ResultadoVO unirMedidasColindancias(ArrayList<ResultadoVO> listaIndicesResultadosVO, ParametrosEntidadVO parametrosEntidadVO,
 			String texto) {
 
 		ArrayList<String> listaResutadoTotal = new ArrayList<String>();
 		ResultadoVO resultadoTotal = new ResultadoVO();
 		resultadoTotal.setListaResutado(listaResutadoTotal);
-
+		
 		for (ResultadoVO resultadoVO : listaIndicesResultadosVO) {
-
+			//fijar longitud (de de desacarte) de grupo de colindancias o de colidancias individuales
+			int longitud = parametrosEntidadVO.getLongitud();
+			if(resultadoVO.getGrupo().equals("1")) {
+				longitud = parametrosEntidadVO.getLongitudGrupoColindancia();
+			}
 			int indiceAnterior = -1;
 			System.out.println("Grupo: " + resultadoVO.getGrupo());
 			for (Map.Entry<Integer, String> valores : resultadoVO.getMapResultado().entrySet()) {

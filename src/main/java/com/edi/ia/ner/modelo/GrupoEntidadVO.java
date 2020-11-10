@@ -5,7 +5,14 @@ public class GrupoEntidadVO {
 	private String grupoEntidad;
 	private String valor;
 	private String codigoServicio;
+	private boolean enviaTextoSiguienteHoja;
 	
+	public boolean isEnviaTextoSiguienteHoja() {
+		return enviaTextoSiguienteHoja;
+	}
+	public void setEnviaTextoSiguienteHoja(boolean enviaTextoSiguienteHoja) {
+		this.enviaTextoSiguienteHoja = enviaTextoSiguienteHoja;
+	}
 	public String getGrupoEntidad() {
 		return grupoEntidad;
 	}
