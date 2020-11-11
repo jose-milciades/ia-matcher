@@ -18,10 +18,36 @@ public class EntidadVO implements Serializable{
 	private String valor;
 	private String codigoServicio;
 	private int confianza;
+	private Integer numeroPagina;
+	private String grupo;
 	private String origenEntidad;
 	private Integer idDocumentoProcesado;
+	private EntidadVO entidadAnterior;
 	
-	
+
+	public Integer getNumeroPagina() {
+		return numeroPagina;
+	}
+
+	public void setNumeroPagina(Integer numeroPagina) {
+		this.numeroPagina = numeroPagina;
+	}
+
+	public String getGrupo() {
+		return grupo;
+	}
+
+	public void setGrupo(String grupo) {
+		this.grupo = grupo;
+	}
+
+	public EntidadVO getEntidadAnterior() {
+		return entidadAnterior;
+	}
+
+	public void setEntidadAnterior(EntidadVO entidadAnterior) {
+		this.entidadAnterior = entidadAnterior;
+	}
 
 	public Integer getIdDocumentoProcesado() {
 		return idDocumentoProcesado;

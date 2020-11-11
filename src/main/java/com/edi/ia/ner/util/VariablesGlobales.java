@@ -7,6 +7,7 @@ public class VariablesGlobales {
 	public static String CODIGO_NUMERO_CREDITO_ACREDITADO = "df002";
 	public static String CODIGO_NUMERO_CREDITO_CONYUGE = "df074";
 
+	public static String GRUPO_ANEXO_B = "ANEXO_B";
 	public static String ORIGEN_ENTIDAD_ANEXO_B = "anexo_b";
 	public static String ORIGEN_ENTIDAD_CERTIFICADO = "certificado";
 	public static String CODIGO_CREDITO_PESOS_ACREDITADO = "df026";
