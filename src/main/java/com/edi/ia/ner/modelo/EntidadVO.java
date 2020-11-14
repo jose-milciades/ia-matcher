@@ -22,7 +22,7 @@ public class EntidadVO implements Serializable{
 	private String grupo;
 	private String origenEntidad;
 	private Integer idDocumentoProcesado;
-	private EntidadVO entidadAnterior;
+	
 	
 
 	public Integer getNumeroPagina() {
@@ -41,13 +41,7 @@ public class EntidadVO implements Serializable{
 		this.grupo = grupo;
 	}
 
-	public EntidadVO getEntidadAnterior() {
-		return entidadAnterior;
-	}
-
-	public void setEntidadAnterior(EntidadVO entidadAnterior) {
-		this.entidadAnterior = entidadAnterior;
-	}
+	
 
 	public Integer getIdDocumentoProcesado() {
 		return idDocumentoProcesado;

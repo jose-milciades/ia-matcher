@@ -223,7 +223,6 @@ public class Controlador implements ControladorServicio {
 
 				ArrayList<String> entidadesPreviamenteProcesadas = new ArrayList<String>();
 
-				this.validarEntidadesReconocidasPreviamenteAnexoB(modeloVO, entidadesPreviamenteProcesadas);
 
 				// Obtener los parametros de las entidades por modelo
 				Map<String, ParametrosEntidadVO> mapParametrosEntidadVO = utilidad
@@ -285,34 +284,7 @@ public class Controlador implements ControladorServicio {
 		return documento;
 	}
 
-	private void validarEntidadesReconocidasPreviamenteAnexoB(ModeloVO modeloVO,
-			ArrayList<String> entidadesPreviamenteProcesadas) {
-		List<String> codigosEntidadAcreditado = Arrays.asList(VariablesGlobales.CODIGOS_ENTIDAD_ACREDITADO.split(" "));
-
-		for (EntidadVO entidadVO : modeloVO.getEntidades()) {
-			if (entidadVO.getEntidadAnterior() != null) {
-				if (entidadVO.getEntidadAnterior().getGrupo() != null) {
-					if (entidadVO.getEntidadAnterior().getGrupo().equals(VariablesGlobales.GRUPO_ANEXO_B)
-							&& codigosEntidadAcreditado.contains(entidadVO.getCodigo())) {
-
-						entidadVO.setConfianza(entidadVO.getEntidadAnterior().getConfianza());
-						entidadVO.setGrupo(entidadVO.getEntidadAnterior().getGrupo());
-						entidadVO.setIdDocumentoProcesado(entidadVO.getEntidadAnterior().getIdDocumentoProcesado());
-						entidadVO.setNumeroPagina(entidadVO.getEntidadAnterior().getNumeroPagina());
-						entidadVO.setOrigenEntidad(entidadVO.getEntidadAnterior().getOrigenEntidad());
-						entidadVO.setValor(entidadVO.getEntidadAnterior().getValor());
-						if (entidadVO.getValor() != null) {
-							entidadesPreviamenteProcesadas.add(entidadVO.getEntidad());
-						}
-						else {
-							entidadVO.setNumeroPagina(0);
-						}
-					}
-				}
-			}
-		}
-
-	}
+	
 
 	private boolean validarMinimoEntidadesReconocidasAnexoB(ModeloVO modeloVO, List<String> codigosEntidad,
 			String CodigoCreditoPesos) {
