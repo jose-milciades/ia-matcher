@@ -72,9 +72,13 @@ public class Controlador implements ControladorServicio {
 		Cotejar cotejar = new Cotejar();
 
 		// Dar formato a los textos de entrada
-		creditoVO.setTextoPropiedad(utilidad.darFormatoTexto(creditoVO.getTextoPropiedad()));
-		creditoVO.setTextoAcreditadoAnexoB(utilidad.darFormatoTexto(creditoVO.getTextoAcreditadoAnexoB()));
-		creditoVO.setTextoConyugeAnexoB(utilidad.darFormatoTexto(creditoVO.getTextoConyugeAnexoB()));
+		creditoVO.setTextoPropiedad(utilidad.darFormatoTexto(creditoVO.getTextoPropiedad().toUpperCase()));
+		creditoVO.setTextoAcreditadoAnexoB(utilidad.darFormatoTexto(creditoVO.getTextoAcreditadoAnexoB().toUpperCase()));
+		creditoVO.setTextoConyugeAnexoB(utilidad.darFormatoTexto(creditoVO.getTextoConyugeAnexoB().toUpperCase()));
+		
+		System.out.println("TextoPropiedad: " +creditoVO.getTextoPropiedad());
+		System.out.println("TextoAcreditadoAnexoB: " +creditoVO.getTextoAcreditadoAnexoB());
+		System.out.println("TextoConyugeAnexoB: " +creditoVO.getTextoConyugeAnexoB());
 
 		try {
 			ModelosNerVO modelosNerVO = utilidad.obtenerModelosNer();
@@ -147,7 +151,9 @@ public class Controlador implements ControladorServicio {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		creditoVO.setTextoAcreditadoAnexoB("");
+		creditoVO.setTextoConyugeAnexoB("");
+		creditoVO.setTextoPropiedad("");
 		return creditoVO;
 	}
 
@@ -185,7 +191,7 @@ public class Controlador implements ControladorServicio {
 					// longitud del tecto
 					if (parametrosEntidadVO.getCantidadMinimaCaracteres() == 0
 							|| texto.length() >= parametrosEntidadVO.getCantidadMinimaCaracteres()) {
-						System.out.println("Cantidad de caracteres del texto: " + texto.length());
+						
 						// Buscar Valor de la entidad
 						grupoEntidadVO.setValor(this.buscarValorEntidad(parametrosEntidadVO, texto));
 						grupoEntidadVO.setCodigoServicio(parametrosEntidadVO.getCodigoServicio());
@@ -353,6 +359,8 @@ public class Controlador implements ControladorServicio {
 
 		if (valorEntidad != null) {
 			valorEntidad = valorEntidad.trim();
+			valorEntidad = valorEntidad.toUpperCase();
+			
 		}
 
 		// Float f = Float.parseFloat("5.2");
@@ -396,7 +404,7 @@ public class Controlador implements ControladorServicio {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("TipoDemanda: " + documento.getTipoDemanda());
+		
 		documento.setTexto(null);
 		return documento;
 	}
@@ -427,10 +435,8 @@ public class Controlador implements ControladorServicio {
 		} else {
 			if (entidadVO.getValor() != " ") {
 				entidadVO.setValor(entidadVO.getValor().trim());
-				System.out.println("antes: entidadVO.setValor: " + entidadVO.getValor());
 				entidadVO.setValor(utilidad.removerValoresAlFinal(parametrosEntidadVO.getValoresRemoverAlFinal(),
 						entidadVO.getValor()));
-				System.out.println("despues: entidadVO.setValor: " + entidadVO.getValor());
 			}
 
 		}
@@ -444,10 +450,10 @@ public class Controlador implements ControladorServicio {
 		listaentidadesRelacionadas.addAll(Arrays.asList(parametrosEntidadVO.getEntidadRelacionadas().split(",")));
 		int i = 0;
 		for (String valor : resultadoVO.getListaResutado()) {
-
+			valor = valor.trim().toUpperCase();
 			if (listaentidadesRelacionadas.size() >= i) {
 				for (EntidadVO entidadVO : listaEntidadesVO) {
-					if (entidadVO.getEntidad().equals(listaentidadesRelacionadas.get(i))) {
+				 	if (entidadVO.getEntidad().equals(listaentidadesRelacionadas.get(i))) {
 						entidadVO.setValor(valor);
 					}
 

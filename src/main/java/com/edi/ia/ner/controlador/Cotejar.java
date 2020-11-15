@@ -3,7 +3,6 @@ package com.edi.ia.ner.controlador;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -141,7 +140,7 @@ public class Cotejar {
 				if (match.find()) {
 					fin = match.end();
 					int fincadena = fin + parametrosEntidadVO.getLongitud();
-					if(texto.length()<fin + parametrosEntidadVO.getLongitud()) {
+					if (texto.length() < fin + parametrosEntidadVO.getLongitud()) {
 						fincadena = texto.length();
 					}
 					String parrafo = texto.substring(fin, fincadena);
@@ -219,7 +218,7 @@ public class Cotejar {
 
 		if (parametrosEntidadVO.getValoresIniciales() != null) {
 			for (int i = 0; i < parametrosEntidadVO.getValoresIniciales().size() && inicio == -1; i++) {
-				regex = Pattern.compile(parametrosEntidadVO.getValoresIniciales().get(i),Pattern.CASE_INSENSITIVE);
+				regex = Pattern.compile(parametrosEntidadVO.getValoresIniciales().get(i), Pattern.CASE_INSENSITIVE);
 				match = regex.matcher(texto);
 				if (match.find()) {
 					inicio = match.end();
@@ -228,9 +227,9 @@ public class Cotejar {
 		}
 
 		if (inicio != -1) {
-			
+
 			int finTexto = inicio + parametrosEntidadVO.getLongitud();
-			if(texto.length()<finTexto) {
+			if (texto.length() < finTexto) {
 				finTexto = texto.length();
 			}
 			String parrafo = texto.substring(inicio, finTexto);
@@ -377,7 +376,6 @@ public class Cotejar {
 				match = regex.matcher(texto);
 				while (match.find()) {
 					// agregar indices a un mapa ordenado
-					System.out.println("Palabra encontrada: " + match.group(0).trim());
 					mapIndex.put(match.start(), match.group(0).trim());
 				}
 			}
@@ -411,14 +409,11 @@ public class Cotejar {
 			// Se identifica la lista de conicidencias más larga
 
 			int longitudListaAnterior = -1;
+			
 			for (ArrayList<Integer> indicesProximosAux : listaIndicesProximos) {
 
-				System.out.println("indicesProximosAux: " + indicesProximosAux.size());
-
-				for (Integer tmp : indicesProximosAux) {
-					System.out.println("Palabra: " + mapIndex.get(tmp));
-				}
-
+				
+				
 				if (longitudListaAnterior != -1) {
 					if (indicesProximosAux.size() > longitudListaAnterior) {
 						listaIndicesProximosMayor = indicesProximosAux;
@@ -433,6 +428,17 @@ public class Cotejar {
 
 			if (listaIndicesProximosMayor.size() >= parametrosEntidadVO.getAsiertos()
 					&& listaIndicesProximosMayor.size() > 0) {
+				
+				
+				//Esto es una rutina de prueba se debe eliminar
+				/////7
+				String palabraTxt = ""; 
+				for (Integer tmp : listaIndicesProximosMayor) {
+					palabraTxt += " " +mapIndex.get(tmp);
+				}
+				System.out.println("Palabras encontradas para la entidad "+ parametrosEntidadVO.getEntidad()+": "+listaIndicesProximosMayor.size()+ " (" + palabraTxt+")");
+				///////
+				
 				// Sacar promedio de posisiones
 
 				int promedioIndices = 0;
@@ -486,9 +492,10 @@ public class Cotejar {
 				ArrayList<String> valoresContenido = new ArrayList<String>();
 				valoresContenido.addAll(Arrays.asList(nombre.split(" ")));
 				ParametrosEntidadVO parametrosEntidadVO = new ParametrosEntidadVO();
+				parametrosEntidadVO.setEntidad("NOMBRE_ACREDITADO_CLASIFICAR_DATOS");
 				parametrosEntidadVO.setValoresContenido(valoresContenido);
 				parametrosEntidadVO.setAsiertos(2);
-				parametrosEntidadVO.setEspacioEntrePalabras(70);
+				parametrosEntidadVO.setEspacioEntrePalabras(20);
 				parametrosEntidadVO.setLongitud(0);
 
 				ArrayList<Integer> indices = this.reconocerEntidadCotejarContenido(parametrosEntidadVO, texto)
@@ -543,13 +550,12 @@ public class Cotejar {
 		}
 
 		// Obtener las colindancias agrupadas en la lista del objeto ResultadoVO
-		ResultadoVO resultadoFinal = this.unirMedidasColindancias(listaIndicesResultadosVO,
-				parametrosEntidadVO, texto);
+		ResultadoVO resultadoFinal = this.unirMedidasColindancias(listaIndicesResultadosVO, parametrosEntidadVO, texto);
 
 		// Identificar indice Final y obtener la ultima colindancia
-		//if (colindanciasAgrupadas == false) {
-			this.setUltimaMedidaColindancia(resultadoFinal, parametrosEntidadVO, texto);
-		//}
+		// if (colindanciasAgrupadas == false) {
+		this.setUltimaMedidaColindancia(resultadoFinal, parametrosEntidadVO, texto);
+		// }
 
 		return resultadoFinal;
 	}
@@ -562,7 +568,6 @@ public class Cotejar {
 		// Identificar indice Final y obtener la ultima colindancia
 		ResultadoVO resultadoIndicesFinales = this.getIndices(parametrosEntidadVO.getValoresFinales(), texto);
 
-		
 		for (Map.Entry<Integer, String> indice : resultadoIndicesFinales.getMapResultado().entrySet()) {
 
 			if (indice.getKey() > resultadoFinal.getUltimoIndice()) {
@@ -598,7 +603,7 @@ public class Cotejar {
 		Integer indiceFinal = -1;
 		boolean existeCaracterDeTermino = false;
 		int longitud = parametrosEntidadVO.getLongitud();
-		if(rsultadoVO.getGrupo().equals("1")) {
+		if (rsultadoVO.getGrupo().equals("1")) {
 			longitud = parametrosEntidadVO.getLongitudGrupoColindancia();
 		}
 		// Identificar indice Final y obtener la ultima colindancia
@@ -694,21 +699,22 @@ public class Cotejar {
 
 	}
 
-	public ResultadoVO unirMedidasColindancias(ArrayList<ResultadoVO> listaIndicesResultadosVO, ParametrosEntidadVO parametrosEntidadVO,
-			String texto) {
+	public ResultadoVO unirMedidasColindancias(ArrayList<ResultadoVO> listaIndicesResultadosVO,
+			ParametrosEntidadVO parametrosEntidadVO, String texto) {
 
 		ArrayList<String> listaResutadoTotal = new ArrayList<String>();
 		ResultadoVO resultadoTotal = new ResultadoVO();
 		resultadoTotal.setListaResutado(listaResutadoTotal);
-		
+
 		for (ResultadoVO resultadoVO : listaIndicesResultadosVO) {
-			//fijar longitud (de de desacarte) de grupo de colindancias o de colidancias individuales
+			// fijar longitud (de de desacarte) de grupo de colindancias o de colidancias
+			// individuales
 			int longitud = parametrosEntidadVO.getLongitud();
-			if(resultadoVO.getGrupo().equals("1")) {
+			if (resultadoVO.getGrupo().equals("1")) {
 				longitud = parametrosEntidadVO.getLongitudGrupoColindancia();
 			}
 			int indiceAnterior = -1;
-			System.out.println("Grupo: " + resultadoVO.getGrupo());
+
 			for (Map.Entry<Integer, String> valores : resultadoVO.getMapResultado().entrySet()) {
 				{
 
@@ -716,15 +722,13 @@ public class Cotejar {
 					// que no se traslapen los valores
 					if (valores.getKey() > resultadoTotal.getUltimoIndice()) {
 
-						System.out.println("valores.getKey(): " + valores.getKey() + " Dato: " + valores.getValue());
-						System.out.println("resultadoTotal.setUltimoIndice: " + resultadoTotal.getUltimoIndice());
 						if (resultadoVO.getMapResultado().size() > 1) {
 							if (indiceAnterior != -1) {
 								// Validar que se cumpla una separación minima entre los indices
 								if (valores.getKey() - indiceAnterior > longitud) {
 									// Fijar resultados encontrados en el texto
-									System.out.println("valores.getKey(): " + valores.getKey() + " Texto: "
-											+ texto.substring(indiceAnterior, valores.getKey()));
+									//System.out.println("valores.getKey(): " + valores.getKey() + " Texto: "
+									//		+ texto.substring(indiceAnterior, valores.getKey()));
 									listaResutadoTotal.add(texto.substring(indiceAnterior, valores.getKey()));
 									indiceAnterior = valores.getKey();
 
@@ -734,7 +738,7 @@ public class Cotejar {
 								}
 							} else {
 								indiceAnterior = valores.getKey();
-								System.out.println("indiceAnterior: " + indiceAnterior);
+
 							}
 						}
 					}
@@ -744,7 +748,7 @@ public class Cotejar {
 			// dato
 			if (resultadoTotal.getUltimoIndice() < resultadoVO.getUltimoIndice()) {
 				resultadoTotal.setUltimoIndice(resultadoVO.getUltimoIndice());
-				System.out.println("resultadoTotal.setUltimoIndice: " + resultadoVO.getUltimoIndice());
+			//	System.out.println("resultadoTotal.setUltimoIndice: " + resultadoVO.getUltimoIndice());
 			}
 		}
 		return resultadoTotal;

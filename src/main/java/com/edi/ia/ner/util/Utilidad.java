@@ -37,15 +37,14 @@ public class Utilidad {
 	}
 
 	public String darFormatoNombre(String nombre) {
-		nombre = nombre.replaceAll("de", "");
+
 		nombre = nombre.replaceAll("DE", "");
-		nombre = nombre.replaceAll("la", "");
 		nombre = nombre.replaceAll("LA", "");
-		nombre = nombre.replaceAll("de", "");
+		nombre = nombre.replaceAll("EL", "");
 		nombre = nombre.replaceAll("CON", "");
-		nombre = nombre.replaceAll("con", "");
-		nombre = nombre.replaceAll("y", "");
 		nombre = nombre.replaceAll("Y", "");
+		nombre = nombre.replaceAll("EN", "");
+		nombre = nombre.replaceAll("LO", "");
 		nombre = nombre.replaceAll(" +", " ");
 
 		return nombre;
@@ -147,23 +146,23 @@ public class Utilidad {
 		}
 		return map;
 	}
-	
+
 	public void validarLetrasAnumeros() {
-        StringTokenizer st = new StringTokenizer("CUATROCIENTOS OCHENTA Y CINCO MIL DOSCIENTOS DOCE");
-        Integer numero = 0;
-        List lstLetras = java.util.Arrays.asList(VariablesGlobales.NUMEROS_EN_LETRAS);
- 
-        while (st.hasMoreTokens()) {
-            String t = st.nextToken();
-            if (t.equals("MIL")) {
-                numero *= 1000;
-            }
-            if (lstLetras.indexOf(t) > -1) {
-                numero += VariablesGlobales.NUMEROS[lstLetras.indexOf(t)];
-            }
-        }
- 
-        System.out.println("Resultado : " + String.valueOf(numero));
-    }
+		StringTokenizer st = new StringTokenizer("CUATROCIENTOS OCHENTA Y CINCO MIL DOSCIENTOS DOCE");
+		Integer numero = 0;
+		List lstLetras = java.util.Arrays.asList(VariablesGlobales.NUMEROS_EN_LETRAS);
+
+		while (st.hasMoreTokens()) {
+			String t = st.nextToken();
+			if (t.equals("MIL")) {
+				numero *= 1000;
+			}
+			if (lstLetras.indexOf(t) > -1) {
+				numero += VariablesGlobales.NUMEROS[lstLetras.indexOf(t)];
+			}
+		}
+
+		System.out.println("Resultado : " + String.valueOf(numero));
+	}
 
 }
