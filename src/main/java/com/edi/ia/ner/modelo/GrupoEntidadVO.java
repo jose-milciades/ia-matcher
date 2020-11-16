@@ -6,7 +6,16 @@ public class GrupoEntidadVO {
 	private String valor;
 	private String codigoServicio;
 	private boolean enviaTextoSiguienteHoja;
+	private boolean siempreEnviarEntidades;
 	
+	
+	
+	public boolean isSiempreEnviarEntidades() {
+		return siempreEnviarEntidades;
+	}
+	public void setSiempreEnviarEntidades(boolean siempreEnviarEntidades) {
+		this.siempreEnviarEntidades = siempreEnviarEntidades;
+	}
 	public boolean isEnviaTextoSiguienteHoja() {
 		return enviaTextoSiguienteHoja;
 	}

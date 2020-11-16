@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+
 import com.edi.ia.ner.modelo.EntidadVO;
 import com.edi.ia.ner.modelo.ModelosNerVO;
 import com.edi.ia.ner.modelo.ParametrosConfiguracionVO;
@@ -147,22 +148,6 @@ public class Utilidad {
 		return map;
 	}
 
-	public void validarLetrasAnumeros() {
-		StringTokenizer st = new StringTokenizer("CUATROCIENTOS OCHENTA Y CINCO MIL DOSCIENTOS DOCE");
-		Integer numero = 0;
-		List lstLetras = java.util.Arrays.asList(VariablesGlobales.NUMEROS_EN_LETRAS);
 
-		while (st.hasMoreTokens()) {
-			String t = st.nextToken();
-			if (t.equals("MIL")) {
-				numero *= 1000;
-			}
-			if (lstLetras.indexOf(t) > -1) {
-				numero += VariablesGlobales.NUMEROS[lstLetras.indexOf(t)];
-			}
-		}
-
-		System.out.println("Resultado : " + String.valueOf(numero));
-	}
 
 }

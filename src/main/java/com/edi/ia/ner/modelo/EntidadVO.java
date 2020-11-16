@@ -22,8 +22,35 @@ public class EntidadVO implements Serializable{
 	private String grupo;
 	private String origenEntidad;
 	private Integer idDocumentoProcesado;
+	private String modelo;
+	private boolean enviaTextoSiguienteHoja;
+	private boolean siempreEnviarEntidades;
 	
 	
+
+	public String getModelo() {
+		return modelo;
+	}
+
+	public void setModelo(String modelo) {
+		this.modelo = modelo;
+	}
+
+	public boolean isEnviaTextoSiguienteHoja() {
+		return enviaTextoSiguienteHoja;
+	}
+
+	public void setEnviaTextoSiguienteHoja(boolean enviaTextoSiguienteHoja) {
+		this.enviaTextoSiguienteHoja = enviaTextoSiguienteHoja;
+	}
+
+	public boolean isSiempreEnviarEntidades() {
+		return siempreEnviarEntidades;
+	}
+
+	public void setSiempreEnviarEntidades(boolean siempreEnviarEntidades) {
+		this.siempreEnviarEntidades = siempreEnviarEntidades;
+	}
 
 	public Integer getNumeroPagina() {
 		return numeroPagina;

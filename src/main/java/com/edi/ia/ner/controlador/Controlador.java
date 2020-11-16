@@ -75,10 +75,6 @@ public class Controlador implements ControladorServicio {
 		creditoVO.setTextoPropiedad(utilidad.darFormatoTexto(creditoVO.getTextoPropiedad().toUpperCase()));
 		creditoVO.setTextoAcreditadoAnexoB(utilidad.darFormatoTexto(creditoVO.getTextoAcreditadoAnexoB().toUpperCase()));
 		creditoVO.setTextoConyugeAnexoB(utilidad.darFormatoTexto(creditoVO.getTextoConyugeAnexoB().toUpperCase()));
-		
-		System.out.println("TextoPropiedad: " +creditoVO.getTextoPropiedad());
-		System.out.println("TextoAcreditadoAnexoB: " +creditoVO.getTextoAcreditadoAnexoB());
-		System.out.println("TextoConyugeAnexoB: " +creditoVO.getTextoConyugeAnexoB());
 
 		try {
 			ModelosNerVO modelosNerVO = utilidad.obtenerModelosNer();
@@ -424,6 +420,7 @@ public class Controlador implements ControladorServicio {
 				if (entidadVOAux.getEntidad().equals("TASA_INTERES_MORATORIO")) {
 					entidadVOAux.setValor(new BigDecimal((TASA_INTERES_ORDINARIO + TASA_INTERES_MORATORIO)).setScale(1,
 							RoundingMode.HALF_EVEN) + "%");
+					break;
 				}
 			}
 		}
