@@ -147,6 +147,16 @@ public class Utilidad {
 		}
 		return map;
 	}
+	
+	public String recortarTexto (String texto, int inicio, int longitud) {
+		
+		int fin = inicio + longitud;
+		if(texto.length() < fin) {
+			fin = texto.length();
+		}
+		
+		return texto.substring(inicio, fin);
+	}
 
 
 

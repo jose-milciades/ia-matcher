@@ -245,8 +245,11 @@ public class Controlador implements ControladorServicio {
 						if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadMedidasColindancias")) {
 							ResultadoVO resultadoVO = cotejar.reconocerEntidadMedidasColindancias(parametrosEntidadVO,
 									documento.getTexto());
+							//Valida que haya mas de un resultado para tomarlo con valido
+							if(resultadoVO.getListaResutado().size()>1) {
 							this.completarEntidadesRelacionadas(resultadoVO, parametrosEntidadVO,
 									modeloVO.getEntidades());
+							}
 						}
 
 						else {
@@ -443,10 +446,15 @@ public class Controlador implements ControladorServicio {
 	public void completarEntidadesRelacionadas(ResultadoVO resultadoVO, ParametrosEntidadVO parametrosEntidadVO,
 			ArrayList<EntidadVO> listaEntidadesVO) {
 
+		
+		
 		ArrayList<String> listaentidadesRelacionadas = new ArrayList<String>();
 		listaentidadesRelacionadas.addAll(Arrays.asList(parametrosEntidadVO.getEntidadRelacionadas().split(",")));
 		int i = 0;
 		for (String valor : resultadoVO.getListaResutado()) {
+			
+			
+			
 			valor = valor.trim().toUpperCase();
 			if (listaentidadesRelacionadas.size() >= i) {
 				for (EntidadVO entidadVO : listaEntidadesVO) {

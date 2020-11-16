@@ -33,6 +33,8 @@ public class Cotejar {
 			}
 
 			if (inicio != -1) {
+				texto = utilidad.recortarTexto(texto, inicio, parametrosEntidadVO.getLongitud());
+				inicio = 0;
 				for (int i = 0; i < parametrosEntidadVO.getValoresFinales().size() && fin == -1; i++) {
 					regex = Pattern.compile(
 							"\\b" + Pattern.quote(parametrosEntidadVO.getValoresFinales().get(i)) + "\\b",
@@ -555,7 +557,9 @@ public class Cotejar {
 
 		// Identificar indice Final y obtener la ultima colindancia
 		// if (colindanciasAgrupadas == false) {
+		if(resultadoFinal.getUltimoIndice()>=0) {
 		this.setUltimaMedidaColindancia(resultadoFinal, parametrosEntidadVO, texto);
+		}
 		// }
 
 		return resultadoFinal;
@@ -655,6 +659,9 @@ public class Cotejar {
 			for (Integer i : indicesOmitir) {
 				resultadoVO.getMapResultado().remove(i);
 			}
+			if(resultadoVO.getMapResultado().size()==0) {
+				resultadoVO.setUltimoIndice(-1);
+			}
 		}
 	}
 
@@ -705,6 +712,7 @@ public class Cotejar {
 
 		ArrayList<String> listaResutadoTotal = new ArrayList<String>();
 		ResultadoVO resultadoTotal = new ResultadoVO();
+		resultadoTotal.setUltimoIndice(-1);
 		resultadoTotal.setListaResutado(listaResutadoTotal);
 
 		for (ResultadoVO resultadoVO : listaIndicesResultadosVO) {
