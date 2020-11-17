@@ -421,8 +421,13 @@ public class Controlador implements ControladorServicio {
 		if (TASA_INTERES_ORDINARIO != null & TASA_INTERES_MORATORIO != null) {
 			for (EntidadVO entidadVOAux : listaEntidadesVO) {
 				if (entidadVOAux.getEntidad().equals("TASA_INTERES_MORATORIO")) {
+					if(TASA_INTERES_MORATORIO > 5) {
+						TASA_INTERES_ORDINARIO = new Float(0);
+					}
 					entidadVOAux.setValor(new BigDecimal((TASA_INTERES_ORDINARIO + TASA_INTERES_MORATORIO)).setScale(1,
 							RoundingMode.HALF_EVEN) + "%");
+					
+					
 					break;
 				}
 			}

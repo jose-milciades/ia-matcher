@@ -39,13 +39,13 @@ public class Utilidad {
 
 	public String darFormatoNombre(String nombre) {
 
-		nombre = nombre.replaceAll("DE", "");
-		nombre = nombre.replaceAll("LA", "");
-		nombre = nombre.replaceAll("EL", "");
-		nombre = nombre.replaceAll("CON", "");
-		nombre = nombre.replaceAll("Y", "");
-		nombre = nombre.replaceAll("EN", "");
-		nombre = nombre.replaceAll("LO", "");
+		nombre = nombre.replaceAll(" DE ", " ");
+		nombre = nombre.replaceAll(" LA ", " ");
+		nombre = nombre.replaceAll(" EL ", " ");
+		nombre = nombre.replaceAll(" CON ", " ");
+		nombre = nombre.replaceAll(" Y ", " ");
+		nombre = nombre.replaceAll(" EN ", " ");
+		nombre = nombre.replaceAll(" LO ", " ");
 		nombre = nombre.replaceAll(" +", " ");
 
 		return nombre;
