@@ -52,16 +52,13 @@ public class Utilidad {
 	}
 
 	public String limpiarAcentos(String texto) {
-
 		String textoSinAcentos = "";
-
 		textoSinAcentos = Normalizer.normalize(texto, Normalizer.Form.NFD);
 		textoSinAcentos = textoSinAcentos.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-
 		return textoSinAcentos;
 
 	}
-
+	
 	public ModelosNerVO obtenerModelosNer() throws JsonSyntaxException, IOException {
 		Archivo archivo = new Archivo();
 		ModelosNerVO modelosNerVO = archivo.leerParametrosEntidades(ParametrosConfiguracionVO.rutaParametrosEntidad);
