@@ -185,9 +185,10 @@ public class Cotejar {
 				if (fin == -1) {
 					inicio = match.start();
 				}
-
+				System.out.println("Credito en texto 1: "+match.group(0).trim());
 				if (fin != -1 && (match.start() - fin) > parametrosEntidadVO.getEspacioEntrePalabras()) {
 					if (contador >= parametrosEntidadVO.getAsiertos()) {
+						System.out.println("Credito en texto 2: "+match.group(0).trim());
 						break;
 					} else {
 						contador = 0;
@@ -271,7 +272,7 @@ public class Cotejar {
 					fin = match.end();
 					contador++;
 				}
-				if (contador >= parametrosEntidadVO.getAsiertos()) {
+				if (contador >= parametrosEntidadVO.getAsiertos() && inicio != -1 && fin != -1) {
 					valorEntidad += parrafo.substring(inicio, fin);
 				}
 			}
@@ -412,11 +413,9 @@ public class Cotejar {
 			// Se identifica la lista de conicidencias más larga
 
 			int longitudListaAnterior = -1;
-			
+
 			for (ArrayList<Integer> indicesProximosAux : listaIndicesProximos) {
 
-				
-				
 				if (longitudListaAnterior != -1) {
 					if (indicesProximosAux.size() > longitudListaAnterior) {
 						listaIndicesProximosMayor = indicesProximosAux;
@@ -431,17 +430,17 @@ public class Cotejar {
 
 			if (listaIndicesProximosMayor.size() >= parametrosEntidadVO.getAsiertos()
 					&& listaIndicesProximosMayor.size() > 0) {
-				
-				
-				//Esto es una rutina de prueba se debe eliminar
-				/////7
-				String palabraTxt = ""; 
+
+				// Esto es una rutina de prueba se debe eliminar
+				///// 7
+				String palabraTxt = "";
 				for (Integer tmp : listaIndicesProximosMayor) {
-					palabraTxt += " " +mapIndex.get(tmp);
+					palabraTxt += " " + mapIndex.get(tmp);
 				}
-				System.out.println("Palabras encontradas para la entidad "+ parametrosEntidadVO.getEntidad()+": "+listaIndicesProximosMayor.size()+ " (" + palabraTxt+")");
+				System.out.println("Palabras encontradas para la entidad " + parametrosEntidadVO.getEntidad() + ": "
+						+ listaIndicesProximosMayor.size() + " (" + palabraTxt + ")");
 				///////
-				
+
 				// Sacar promedio de posisiones
 
 				int promedioIndices = 0;
@@ -538,7 +537,8 @@ public class Cotejar {
 			this.setUtimoIndice(listaIndicesResultadosVO);
 			if (indicesResultadosVO.getMapResultado().size() > 3 && indicesResultadosVO.getGrupo().equals("1")) {
 				// if (indicesResultadosVO.getMapResultado().size() % 2 != 0) {
-				this.setIndiceFinalDeUltimaColindacia(indicesResultadosVO, parametrosEntidadVO, texto);
+				
+				//Comentado 2 de enro de 2020 this.setIndiceFinalDeUltimaColindacia(indicesResultadosVO, parametrosEntidadVO, texto);
 				// }
 				colindanciasAgrupadas = true;
 			}
@@ -549,7 +549,7 @@ public class Cotejar {
 
 		// Quitar los indices que sen mayores al mayor indice del siguiente grupo
 		if (colindanciasAgrupadas == false) {
-			this.onitirIndiceMayorSigueinteGrupo(listaIndicesResultadosVO, "1");
+			this.omitirIndiceMayorSigueinteGrupo(listaIndicesResultadosVO, "1");
 		}
 
 		// Obtener las colindancias agrupadas en la lista del objeto ResultadoVO
@@ -557,8 +557,8 @@ public class Cotejar {
 
 		// Identificar indice Final y obtener la ultima colindancia
 		// if (colindanciasAgrupadas == false) {
-		if(resultadoFinal.getUltimoIndice()>=0) {
-		this.setUltimaMedidaColindancia(resultadoFinal, parametrosEntidadVO, texto);
+		if (resultadoFinal.getUltimoIndice() >= 0 ) {
+			this.setUltimaMedidaColindancia(resultadoFinal, parametrosEntidadVO, texto);
 		}
 		// }
 
@@ -576,7 +576,7 @@ public class Cotejar {
 		for (Map.Entry<Integer, String> indice : resultadoIndicesFinales.getMapResultado().entrySet()) {
 
 			if (indice.getKey() > resultadoFinal.getUltimoIndice()) {
-				if (indice.getKey() - indiceAnterior > parametrosEntidadVO.getLongitud()) {
+				if (indice.getKey() - indiceAnterior > parametrosEntidadVO.getLongitud() && resultadoFinal.getUltimoIndice() - indice.getKey() > 15) {
 
 					resultadoFinal.getListaResutado()
 							.add(texto.substring(resultadoFinal.getUltimoIndice(), indice.getKey()));
@@ -659,13 +659,13 @@ public class Cotejar {
 			for (Integer i : indicesOmitir) {
 				resultadoVO.getMapResultado().remove(i);
 			}
-			if(resultadoVO.getMapResultado().size()==0) {
+			if (resultadoVO.getMapResultado().size() == 0) {
 				resultadoVO.setUltimoIndice(-1);
 			}
 		}
 	}
 
-	public void onitirIndiceMayorSigueinteGrupo(ArrayList<ResultadoVO> listaIndicesResultadosVO, String grupo) {
+	public void omitirIndiceMayorSigueinteGrupo(ArrayList<ResultadoVO> listaIndicesResultadosVO, String grupo) {
 		int i = 0;
 		ArrayList<Integer> indicesOmitir = new ArrayList<Integer>();
 		Integer ultimoIndiceSiguiente = -1;
@@ -715,6 +715,8 @@ public class Cotejar {
 		resultadoTotal.setUltimoIndice(-1);
 		resultadoTotal.setListaResutado(listaResutadoTotal);
 
+		int indiceAnterior = -1;
+		
 		for (ResultadoVO resultadoVO : listaIndicesResultadosVO) {
 			// fijar longitud (de de desacarte) de grupo de colindancias o de colidancias
 			// individuales
@@ -722,7 +724,7 @@ public class Cotejar {
 			if (resultadoVO.getGrupo().equals("1")) {
 				longitud = parametrosEntidadVO.getLongitudGrupoColindancia();
 			}
-			int indiceAnterior = -1;
+			//comentado el 2 de enro de 2020 indiceAnterior = -1;
 
 			for (Map.Entry<Integer, String> valores : resultadoVO.getMapResultado().entrySet()) {
 				{
@@ -736,8 +738,8 @@ public class Cotejar {
 								// Validar que se cumpla una separación minima entre los indices
 								if (valores.getKey() - indiceAnterior > longitud) {
 									// Fijar resultados encontrados en el texto
-									//System.out.println("valores.getKey(): " + valores.getKey() + " Texto: "
-									//		+ texto.substring(indiceAnterior, valores.getKey()));
+									// System.out.println("valores.getKey(): " + valores.getKey() + " Texto: "
+									// + texto.substring(indiceAnterior, valores.getKey()));
 									listaResutadoTotal.add(texto.substring(indiceAnterior, valores.getKey()));
 									indiceAnterior = valores.getKey();
 
@@ -757,7 +759,8 @@ public class Cotejar {
 			// dato
 			if (resultadoTotal.getUltimoIndice() < resultadoVO.getUltimoIndice()) {
 				resultadoTotal.setUltimoIndice(resultadoVO.getUltimoIndice());
-			//	System.out.println("resultadoTotal.setUltimoIndice: " + resultadoVO.getUltimoIndice());
+				// System.out.println("resultadoTotal.setUltimoIndice: " +
+				// resultadoVO.getUltimoIndice());
 			}
 		}
 		return resultadoTotal;

@@ -73,7 +73,8 @@ public class Controlador implements ControladorServicio {
 
 		// Dar formato a los textos de entrada
 		creditoVO.setTextoPropiedad(utilidad.darFormatoTexto(creditoVO.getTextoPropiedad().toUpperCase()));
-		creditoVO.setTextoAcreditadoAnexoB(utilidad.darFormatoTexto(creditoVO.getTextoAcreditadoAnexoB().toUpperCase()));
+		creditoVO
+				.setTextoAcreditadoAnexoB(utilidad.darFormatoTexto(creditoVO.getTextoAcreditadoAnexoB().toUpperCase()));
 		creditoVO.setTextoConyugeAnexoB(utilidad.darFormatoTexto(creditoVO.getTextoConyugeAnexoB().toUpperCase()));
 
 		try {
@@ -157,8 +158,9 @@ public class Controlador implements ControladorServicio {
 	public GrupoEntidadesVO reconocerParrafo(GrupoEntidadesVO grupoEntidad) {
 
 		grupoEntidad.setTexto(utilidad.darFormatoTexto(grupoEntidad.getTexto()));
-		grupoEntidad.setTextoPaginaActual(utilidad.darFormatoTexto(grupoEntidad.getTextoPaginaActual()));
-
+		if (grupoEntidad.getTextoPaginaActual() != null) {
+			grupoEntidad.setTextoPaginaActual(utilidad.darFormatoTexto(grupoEntidad.getTextoPaginaActual()));
+		}
 		ArrayList<String> entidadesPreviamenteProcesadas = new ArrayList<String>();
 
 		ModelosNerVO modelosNerVO;
@@ -187,7 +189,7 @@ public class Controlador implements ControladorServicio {
 					// longitud del tecto
 					if (parametrosEntidadVO.getCantidadMinimaCaracteres() == 0
 							|| texto.length() >= parametrosEntidadVO.getCantidadMinimaCaracteres()) {
-						
+
 						// Buscar Valor de la entidad
 						grupoEntidadVO.setValor(this.buscarValorEntidad(parametrosEntidadVO, texto));
 						grupoEntidadVO.setCodigoServicio(parametrosEntidadVO.getCodigoServicio());
@@ -225,7 +227,6 @@ public class Controlador implements ControladorServicio {
 
 				ArrayList<String> entidadesPreviamenteProcesadas = new ArrayList<String>();
 
-
 				// Obtener los parametros de las entidades por modelo
 				Map<String, ParametrosEntidadVO> mapParametrosEntidadVO = utilidad
 						.obtenerParametrosEntidad(modelosNerVO, modeloVO.getModelo());
@@ -245,11 +246,9 @@ public class Controlador implements ControladorServicio {
 						if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadMedidasColindancias")) {
 							ResultadoVO resultadoVO = cotejar.reconocerEntidadMedidasColindancias(parametrosEntidadVO,
 									documento.getTexto());
-							//Valida que haya mas de un resultado para tomarlo con valido
-							if(resultadoVO.getListaResutado().size()>1) {
-							this.completarEntidadesRelacionadas(resultadoVO, parametrosEntidadVO,
-									modeloVO.getEntidades());
-							}
+								this.completarEntidadesRelacionadas(resultadoVO, parametrosEntidadVO,
+										modeloVO.getEntidades(), entidadesPreviamenteProcesadas);
+							
 						}
 
 						else {
@@ -267,7 +266,7 @@ public class Controlador implements ControladorServicio {
 					}
 				}
 				// Validar si reconocio al menos la entidad credito en pesos del anexo_b para
-				// retornar valores de los contrario limpia los valores.
+				// retornar valores de lo contrario limpia los valores.
 				List<String> codigosEntidadAcreditado = Arrays
 						.asList(VariablesGlobales.CODIGOS_ENTIDAD_ACREDITADO.split(" "));
 				if (this.validarMinimoEntidadesReconocidasAnexoB(modeloVO, codigosEntidadAcreditado,
@@ -288,8 +287,6 @@ public class Controlador implements ControladorServicio {
 		documento.setTexto(null);
 		return documento;
 	}
-
-	
 
 	private boolean validarMinimoEntidadesReconocidasAnexoB(ModeloVO modeloVO, List<String> codigosEntidad,
 			String CodigoCreditoPesos) {
@@ -359,7 +356,7 @@ public class Controlador implements ControladorServicio {
 		if (valorEntidad != null) {
 			valorEntidad = valorEntidad.trim();
 			valorEntidad = valorEntidad.toUpperCase();
-			
+
 		}
 
 		// Float f = Float.parseFloat("5.2");
@@ -403,7 +400,7 @@ public class Controlador implements ControladorServicio {
 				e.printStackTrace();
 			}
 		}
-		
+
 		documento.setTexto(null);
 		return documento;
 	}
@@ -421,13 +418,12 @@ public class Controlador implements ControladorServicio {
 		if (TASA_INTERES_ORDINARIO != null & TASA_INTERES_MORATORIO != null) {
 			for (EntidadVO entidadVOAux : listaEntidadesVO) {
 				if (entidadVOAux.getEntidad().equals("TASA_INTERES_MORATORIO")) {
-					if(TASA_INTERES_MORATORIO > 5) {
+					if (TASA_INTERES_MORATORIO > 5) {
 						TASA_INTERES_ORDINARIO = new Float(0);
 					}
 					entidadVOAux.setValor(new BigDecimal((TASA_INTERES_ORDINARIO + TASA_INTERES_MORATORIO)).setScale(1,
 							RoundingMode.HALF_EVEN) + "%");
-					
-					
+
 					break;
 				}
 			}
@@ -449,28 +445,33 @@ public class Controlador implements ControladorServicio {
 	}
 
 	public void completarEntidadesRelacionadas(ResultadoVO resultadoVO, ParametrosEntidadVO parametrosEntidadVO,
-			ArrayList<EntidadVO> listaEntidadesVO) {
+			ArrayList<EntidadVO> listaEntidadesVO, ArrayList<String> entidadesPreviamenteProcesadas) {
+		// Valida que haya mas de un resultado para tomarlo con valido
+		if (resultadoVO.getListaResutado().size() > 1) {
+			ArrayList<String> listaentidadesRelacionadas = new ArrayList<String>();
+			listaentidadesRelacionadas.addAll(Arrays.asList(parametrosEntidadVO.getEntidadRelacionadas().split(",")));
+			int i = 0;
+			for (String valor : resultadoVO.getListaResutado()) {
 
-		
-		
-		ArrayList<String> listaentidadesRelacionadas = new ArrayList<String>();
-		listaentidadesRelacionadas.addAll(Arrays.asList(parametrosEntidadVO.getEntidadRelacionadas().split(",")));
-		int i = 0;
-		for (String valor : resultadoVO.getListaResutado()) {
-			
-			
-			
-			valor = valor.trim().toUpperCase();
-			if (listaentidadesRelacionadas.size() >= i) {
-				for (EntidadVO entidadVO : listaEntidadesVO) {
-				 	if (entidadVO.getEntidad().equals(listaentidadesRelacionadas.get(i))) {
-						entidadVO.setValor(valor);
+				valor = valor.trim().toUpperCase();
+				if (listaentidadesRelacionadas.size() > i) {
+					for (EntidadVO entidadVO : listaEntidadesVO) {
+						if (entidadVO.getEntidad().equals(listaentidadesRelacionadas.get(i))) {
+							entidadVO.setValor(valor);
+						}
+
+						this.aplicarReglasParticularesEntidad(entidadVO, listaEntidadesVO, parametrosEntidadVO);
 					}
-
-					this.aplicarReglasParticularesEntidad(entidadVO, listaEntidadesVO, parametrosEntidadVO);
+				}
+				i++;
+			}
+		} else {
+			for (EntidadVO entidadVO : listaEntidadesVO) {
+				entidadVO.setValor(null);
+				if(!entidadesPreviamenteProcesadas.contains(entidadVO.getEntidad())){
+					entidadesPreviamenteProcesadas.add(entidadVO.getEntidad());
 				}
 			}
-			i++;
 		}
 	}
 
