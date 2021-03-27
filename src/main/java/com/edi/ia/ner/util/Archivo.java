@@ -53,6 +53,7 @@ public class Archivo {
 			}
 			modelosNerVO = gson.fromJson(archivoConfiguracion, ModelosNerVO.class);
 		}
+		
 
 		for (ModeloNerVO modeloNerVO : modelosNerVO.getModelos()) {
 			Map<String, ParametrosEntidadVO> map = new TreeMap<String, ParametrosEntidadVO>();
