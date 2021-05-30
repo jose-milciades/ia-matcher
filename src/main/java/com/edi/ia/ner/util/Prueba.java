@@ -1,5 +1,6 @@
 package com.edi.ia.ner.util;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,7 +43,11 @@ public class Prueba {
 			//System.out.println("*"+texto.substring(match.start(), match.end())+"*");
 		}
 		
+		ArrayList<String> entidades = new ArrayList<String>();
+		entidades.add(VariablesGlobales.NOMBRE_ACREDITADO_CLASIFICAR_DATOS);
+		entidades.add(VariablesGlobales.NOMBRE_ACREDITADO_CLASIFICAR_DATOS);
 		
+		System.out.println(entidades.toString());
 		
 		
 		

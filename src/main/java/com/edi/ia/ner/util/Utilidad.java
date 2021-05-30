@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.TreeMap;
 
 import com.edi.ia.ner.modelo.EntidadVO;
@@ -59,11 +58,13 @@ public class Utilidad {
 
 	}
 	
-	public ModelosNerVO obtenerModelosNer() throws JsonSyntaxException, IOException {
+	public ModelosNerVO obtenerModelosNer(String modelo) throws JsonSyntaxException, IOException {
 		Archivo archivo = new Archivo();
-		ModelosNerVO modelosNerVO = archivo.leerParametrosEntidades(ParametrosConfiguracionVO.rutaParametrosEntidad);
+		//ModelosNerVO modelosNerVO = archivo.leerParametrosEntidades("src/main/resources/", modelo);
+		ModelosNerVO modelosNerVO = archivo.leerParametrosEntidades(ParametrosConfiguracionVO.rutaParametrosEntidad, modelo);
 		return modelosNerVO;
 	}
+	
 
 	public Map<String, ParametrosEntidadVO> obtenerParametrosEntidad(ModelosNerVO modelosNerVO, String modelo) {
 		Map<String, ParametrosEntidadVO> mapParametrosEntidadVO = new TreeMap<String, ParametrosEntidadVO>();

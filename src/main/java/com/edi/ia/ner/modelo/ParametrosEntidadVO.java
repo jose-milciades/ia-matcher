@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class ParametrosEntidadVO {
 
-	private String entidad;
+	
 	private String entidadRelacionadas;
 	private String tipoReconocimiento;
 	private int posicion;
@@ -19,6 +19,7 @@ public class ParametrosEntidadVO {
 	private String expresionRegularValoresFinales;
 	private String etiqueta;
 	private String codigoServicio;
+	private ArrayList<String> entidades;
 	private ArrayList<String> valoresIniciales;
 	private ArrayList<String> valoresFinales;
 	private ArrayList<String> valoresContenido;
@@ -123,9 +124,6 @@ public class ParametrosEntidadVO {
 		this.valoresContenido = valoresContenido;
 	}
 
-	public String getEntidad() {
-		return entidad;
-	}
 
 	public int getPosicion() {
 		return posicion;
@@ -135,8 +133,12 @@ public class ParametrosEntidadVO {
 		this.posicion = posicion;
 	}
 
-	public void setEntidad(String entidad) {
-		this.entidad = entidad;
+	public ArrayList<String> getEntidades() {
+		return entidades;
+	}
+
+	public void setEntidades(ArrayList<String> entidades) {
+		this.entidades = entidades;
 	}
 
 	public String getTipoReconocimiento() {

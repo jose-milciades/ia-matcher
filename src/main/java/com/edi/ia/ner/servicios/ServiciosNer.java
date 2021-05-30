@@ -47,6 +47,13 @@ public class ServiciosNer {
 
 	}
 	
+	@PostMapping(value = "/reconcerFechasOmisos")
+	public CreditoVO reconcerFechasOmisos(@RequestBody CreditoVO creditoVO) {
+
+		return controlador.reconcerFechasOmisos(creditoVO);
+
+	}
+	
 	@GetMapping({"/actuator/info"})
 	public boolean apiValues(){
 		return true;

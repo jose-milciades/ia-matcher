@@ -9,6 +9,7 @@ public class CreditoVO {
 	String textoAcreditadoAnexoB;
 	String textoConyugeAnexoB;
 	String textoPropiedad;
+	ArrayList<String> hojasCertificado;
 	ArrayList<EntidadVO> entidades;
 	
 	public ArrayList<EntidadVO> getEntidades() {
@@ -17,6 +18,14 @@ public class CreditoVO {
 	public void setEntidades(ArrayList<EntidadVO> entidades) {
 		this.entidades = entidades;
 	}
+	
+	public ArrayList<String> getHojasCertificado() {
+		return hojasCertificado;
+	}
+	public void setHojasCertificado(ArrayList<String> hojasCertificado) {
+		this.hojasCertificado = hojasCertificado;
+	}
+	
 	public String getTextoAcreditadoAnexoB() {
 		return textoAcreditadoAnexoB;
 	}

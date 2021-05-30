@@ -1,6 +1,8 @@
 package com.edi.ia.ner.controlador;
 
 import java.util.regex.Pattern;
+
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -11,6 +13,7 @@ import com.edi.ia.ner.modelo.ContenidoTextoVO;
 import com.edi.ia.ner.modelo.ParametrosEntidadVO;
 import com.edi.ia.ner.modelo.ResultadoVO;
 import com.edi.ia.ner.util.Utilidad;
+import com.edi.ia.ner.util.VariablesGlobales;
 
 public class Cotejar {
 
@@ -77,6 +80,59 @@ public class Cotejar {
 			}
 		}
 
+		return valorEntidad;
+	}
+
+	public String reconocerEntidadFechaOmisos(ParametrosEntidadVO parametrosEntidadVO,
+			ArrayList<String> hojasCertificado) {
+		String valorEntidad = null;
+		String textoAux = null;
+		ArrayList<String> moviminetos = new ArrayList<String>();
+		
+
+		Pattern regex;
+		Matcher match;
+		for (String textoHoja : hojasCertificado) {
+			if (moviminetos.isEmpty()) {
+				regex = Pattern.compile(parametrosEntidadVO.getExpresionRegularValoresIniciales(),
+						Pattern.CASE_INSENSITIVE);
+				match = regex.matcher(textoHoja);
+				if (match.find()) {
+					regex = Pattern.compile(parametrosEntidadVO.getExpresionRegular(), Pattern.CASE_INSENSITIVE);
+					textoAux = textoHoja.substring(match.end(), textoHoja.length() - 1).trim();
+					match = regex.matcher(textoAux);
+					while (match.find()) {
+						moviminetos.add(textoAux.substring(match.start(), match.end()));
+					}
+				}
+			}
+			else {
+				regex = Pattern.compile(parametrosEntidadVO.getExpresionRegularValoresFinales(),
+						Pattern.CASE_INSENSITIVE);
+				match = regex.matcher(textoHoja);
+				if (match.find()) {
+					regex = Pattern.compile(parametrosEntidadVO.getExpresionRegular(), Pattern.CASE_INSENSITIVE);
+					textoAux = textoHoja.substring(0, match.start())+" ";
+					match = regex.matcher(textoAux);
+					while (match.find()) {
+						moviminetos.add(textoAux.substring(match.start(), match.end()));
+						
+					}
+					break;
+
+				} else {
+					regex = Pattern.compile(parametrosEntidadVO.getExpresionRegular(), Pattern.CASE_INSENSITIVE);
+					match = regex.matcher(textoHoja.trim());
+					while (match.find()) {
+						moviminetos.add(textoHoja.substring(match.start(), match.end()));
+
+					}
+				}
+			}
+		}
+		for (String mov : moviminetos) {
+			System.out.println(mov);
+		}
 		return valorEntidad;
 	}
 
@@ -185,10 +241,10 @@ public class Cotejar {
 				if (fin == -1) {
 					inicio = match.start();
 				}
-				System.out.println("Credito en texto 1: "+match.group(0).trim());
+				System.out.println("Credito en texto 1: " + match.group(0).trim());
 				if (fin != -1 && (match.start() - fin) > parametrosEntidadVO.getEspacioEntrePalabras()) {
 					if (contador >= parametrosEntidadVO.getAsiertos()) {
-						System.out.println("Credito en texto 2: "+match.group(0).trim());
+						System.out.println("Credito en texto 2: " + match.group(0).trim());
 						break;
 					} else {
 						contador = 0;
@@ -437,7 +493,7 @@ public class Cotejar {
 				for (Integer tmp : listaIndicesProximosMayor) {
 					palabraTxt += " " + mapIndex.get(tmp);
 				}
-				System.out.println("Palabras encontradas para la entidad " + parametrosEntidadVO.getEntidad() + ": "
+				System.out.println("Palabras encontradas para las entidades " + parametrosEntidadVO.getEntidades().toString() + ": "
 						+ listaIndicesProximosMayor.size() + " (" + palabraTxt + ")");
 				///////
 
@@ -494,7 +550,9 @@ public class Cotejar {
 				ArrayList<String> valoresContenido = new ArrayList<String>();
 				valoresContenido.addAll(Arrays.asList(nombre.split(" ")));
 				ParametrosEntidadVO parametrosEntidadVO = new ParametrosEntidadVO();
-				parametrosEntidadVO.setEntidad("NOMBRE_ACREDITADO_CLASIFICAR_DATOS");
+				ArrayList<String> entidades = new ArrayList<String>();
+				entidades.add(VariablesGlobales.NOMBRE_ACREDITADO_CLASIFICAR_DATOS);
+				parametrosEntidadVO.setEntidades(entidades);
 				parametrosEntidadVO.setValoresContenido(valoresContenido);
 				parametrosEntidadVO.setAsiertos(2);
 				parametrosEntidadVO.setEspacioEntrePalabras(20);
@@ -537,8 +595,10 @@ public class Cotejar {
 			this.setUtimoIndice(listaIndicesResultadosVO);
 			if (indicesResultadosVO.getMapResultado().size() > 3 && indicesResultadosVO.getGrupo().equals("1")) {
 				// if (indicesResultadosVO.getMapResultado().size() % 2 != 0) {
-				
-				//Comentado 2 de enro de 2020 this.setIndiceFinalDeUltimaColindacia(indicesResultadosVO, parametrosEntidadVO, texto);
+
+				// Comentado 2 de enro de 2020
+				// this.setIndiceFinalDeUltimaColindacia(indicesResultadosVO,
+				// parametrosEntidadVO, texto);
 				// }
 				colindanciasAgrupadas = true;
 			}
@@ -557,7 +617,7 @@ public class Cotejar {
 
 		// Identificar indice Final y obtener la ultima colindancia
 		// if (colindanciasAgrupadas == false) {
-		if (resultadoFinal.getUltimoIndice() >= 0 ) {
+		if (resultadoFinal.getUltimoIndice() >= 0) {
 			this.setUltimaMedidaColindancia(resultadoFinal, parametrosEntidadVO, texto);
 		}
 		// }
@@ -576,7 +636,8 @@ public class Cotejar {
 		for (Map.Entry<Integer, String> indice : resultadoIndicesFinales.getMapResultado().entrySet()) {
 
 			if (indice.getKey() > resultadoFinal.getUltimoIndice()) {
-				if (indice.getKey() - indiceAnterior > parametrosEntidadVO.getLongitud() && resultadoFinal.getUltimoIndice() - indice.getKey() > 15) {
+				if (indice.getKey() - indiceAnterior > parametrosEntidadVO.getLongitud()
+						&& resultadoFinal.getUltimoIndice() - indice.getKey() > 15) {
 
 					resultadoFinal.getListaResutado()
 							.add(texto.substring(resultadoFinal.getUltimoIndice(), indice.getKey()));
@@ -716,7 +777,7 @@ public class Cotejar {
 		resultadoTotal.setListaResutado(listaResutadoTotal);
 
 		int indiceAnterior = -1;
-		
+
 		for (ResultadoVO resultadoVO : listaIndicesResultadosVO) {
 			// fijar longitud (de de desacarte) de grupo de colindancias o de colidancias
 			// individuales
@@ -724,7 +785,7 @@ public class Cotejar {
 			if (resultadoVO.getGrupo().equals("1")) {
 				longitud = parametrosEntidadVO.getLongitudGrupoColindancia();
 			}
-			//comentado el 2 de enro de 2020 indiceAnterior = -1;
+			// comentado el 2 de enro de 2020 indiceAnterior = -1;
 
 			for (Map.Entry<Integer, String> valores : resultadoVO.getMapResultado().entrySet()) {
 				{

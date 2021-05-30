@@ -14,4 +14,6 @@ public interface ControladorServicio {
 	GrupoEntidadesVO reconocerParrafo(GrupoEntidadesVO grupoEntidad);
 	
 	CreditoVO clasificarDatosCredito(CreditoVO creditoVO);
+	
+	CreditoVO reconcerFechasOmisos(CreditoVO creditoVO);
 }

@@ -3,6 +3,7 @@ package com.edi.ia.ner.util;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -31,40 +32,51 @@ import com.edi.ia.ner.modelo.ModelosNerVO;
 import com.edi.ia.ner.modelo.ParametrosEntidadVO;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-
+import com.google.gson.stream.JsonReader;
+import com.google.common.reflect.TypeToken;
+import java.lang.reflect.Type;
 
 public class Archivo {
 
 	private final static Logger LOGGER = Logger.getLogger("com.solera.audamedic.estadocuentasap.util.Archivo ");
 
-	
-
-	public ModelosNerVO leerParametrosEntidades(String ruta) throws IOException, JsonSyntaxException {
+	public ModelosNerVO leerParametrosEntidades(String ruta, String modelo) throws IOException, JsonSyntaxException {
 		Gson gson = new Gson();
 		// ParametrosEntidadesVO parametrosEntidadesVO;
 		ModelosNerVO modelosNerVO;
 		String archivoConfiguracion = "";
-		
-
-		try (Stream<String> stream = Files.lines(Paths.get(ruta))) {
+		String nombreArchivo = this.leerIndiceModelos(ruta + VariablesGlobales.NOMBRE_ARCHIVO_INDICE_MODELOS)
+				.get(modelo);
+		try (Stream<String> stream = Files.lines(Paths.get(ruta + nombreArchivo))) {
 			Iterator<String> lineas = stream.iterator();
 			while (lineas.hasNext()) {
 				archivoConfiguracion += lineas.next().toString().trim();
 			}
 			modelosNerVO = gson.fromJson(archivoConfiguracion, ModelosNerVO.class);
 		}
-		
 
 		for (ModeloNerVO modeloNerVO : modelosNerVO.getModelos()) {
 			Map<String, ParametrosEntidadVO> map = new TreeMap<String, ParametrosEntidadVO>();
-
 			for (ParametrosEntidadVO parametrosEntidadVO : modeloNerVO.getParametrosEntidades()) {
-				map.put(parametrosEntidadVO.getEntidad(), parametrosEntidadVO);
+				for (String entidad : parametrosEntidadVO.getEntidades()) {
+					map.put(entidad, parametrosEntidadVO);
+				}
 			}
 			modeloNerVO.setMap(map);
+			// System.out.println(map);
 		}
 
 		return modelosNerVO;
+	}
+
+	public Map<String, String> leerIndiceModelos(String ruta) throws IOException, JsonSyntaxException {
+
+		JsonReader getLocalJsonFile = new JsonReader(new FileReader(ruta));
+		Type mapTokenType = new TypeToken<Map<String, String>>() {
+		}.getType();
+		Map<String, String> jsonMap = new Gson().fromJson(getLocalJsonFile, mapTokenType);
+		System.out.println(jsonMap);
+		return jsonMap;
 	}
 
 	/**
