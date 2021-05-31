@@ -3,5 +3,5 @@
 	"reconocer_demanda": 		"parametros_entidad.json",
 	"ner-escritura": 			"parametros_entidad.json",
 	"ner-grupo-entidades": 		"parametros_entidad_reconocer_hoja.json",
-	"ner-recibos": 				"parametros_entidad_recibo.json"
+	"ner-recibo": 				"parametros_entidad_recibo.json"
 }
