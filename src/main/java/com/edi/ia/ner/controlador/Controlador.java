@@ -360,11 +360,11 @@ public class Controlador implements ControladorServicio {
 		Cotejar cotejar = new Cotejar();
 		String valorEntidad = null;
 		if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadEntreTexto")) {
-			valorEntidad = cotejar.reconocerEntidadEntreTexto(parametrosEntidadVO, texto);
+			valorEntidad = cotejar.reconocerEntidadEntreTexto(parametrosEntidadVO, texto, true);
 		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadExpresionRegular")) {
 			valorEntidad = cotejar.reconocerEntidadExpresionRegular(parametrosEntidadVO, texto);
 		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadSiguiente")) {
-			valorEntidad = cotejar.reconocerEntidadSiguiente(parametrosEntidadVO, texto);
+			valorEntidad = cotejar.reconocerEntidadSiguiente(parametrosEntidadVO, texto, true);
 		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadLista")) {
 			valorEntidad = cotejar.reconocerEntidadLista(parametrosEntidadVO, texto);
 			// } else if
@@ -384,6 +384,12 @@ public class Controlador implements ControladorServicio {
 			valorEntidad = cotejar.reconocerEntidadEntreTextoExpresionRegular(parametrosEntidadVO, texto);
 		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadSuperficie")) {
 			valorEntidad = cotejar.reconocerEntidadSuperficie(parametrosEntidadVO, texto);
+		}
+		// recibos
+		else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadSiguienteNoMetaScape")) {
+			valorEntidad = cotejar.reconocerEntidadSiguiente(parametrosEntidadVO, texto, false);
+		} else if(parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadEntreTextoNoMetaScape")) {
+			valorEntidad = cotejar.reconocerEntidadEntreTexto(parametrosEntidadVO, texto, false);
 		}
 
 		if (valorEntidad != null) {

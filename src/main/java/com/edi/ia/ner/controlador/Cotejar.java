@@ -19,16 +19,26 @@ public class Cotejar {
 
 	Utilidad utilidad = new Utilidad();
 
-	public String reconocerEntidadEntreTexto(ParametrosEntidadVO parametrosEntidadVO, String texto) {
+	public String reconocerEntidadEntreTexto(ParametrosEntidadVO parametrosEntidadVO, String texto, boolean  metaScape) {
 		String valorEntidad = null;
 		int inicio = -1;
 		int fin = -1;
 		Pattern regex;
 		Matcher match;
+		String metaScapeValue = "";
+		
+		if (metaScape) {
+			metaScapeValue = "\\b";
+		}
+		
 		if (parametrosEntidadVO.getValoresIniciales() != null && parametrosEntidadVO.getValoresFinales() != null) {
 			for (int i = 0; i < parametrosEntidadVO.getValoresIniciales().size() && inicio == -1; i++) {
-				regex = Pattern.compile("\\b" + Pattern.quote(parametrosEntidadVO.getValoresIniciales().get(i)) + "\\b",
-						Pattern.CASE_INSENSITIVE);
+				regex = Pattern.compile(
+						metaScapeValue + 
+						Pattern.quote(parametrosEntidadVO.getValoresIniciales().get(i)) + 
+						metaScapeValue,
+						Pattern.CASE_INSENSITIVE
+					);
 				match = regex.matcher(texto);
 				if (match.find()) {
 					inicio = match.end();
@@ -40,8 +50,11 @@ public class Cotejar {
 				inicio = 0;
 				for (int i = 0; i < parametrosEntidadVO.getValoresFinales().size() && fin == -1; i++) {
 					regex = Pattern.compile(
-							"\\b" + Pattern.quote(parametrosEntidadVO.getValoresFinales().get(i)) + "\\b",
-							Pattern.CASE_INSENSITIVE);
+								metaScapeValue +
+								Pattern.quote(parametrosEntidadVO.getValoresFinales().get(i)) + 
+								metaScapeValue ,
+								Pattern.CASE_INSENSITIVE
+							);
 					match = regex.matcher(texto);
 					if (match.find()) {
 						fin = match.start();
@@ -136,18 +149,25 @@ public class Cotejar {
 		return valorEntidad;
 	}
 
-	public String reconocerEntidadSiguiente(ParametrosEntidadVO parametrosEntidadVO, String texto) {
+	public String reconocerEntidadSiguiente(ParametrosEntidadVO parametrosEntidadVO, String texto, boolean metaScape) {
 
 		String valorEntidad = null;
 		int fin = -1;
 		int aux = 0;
 		Pattern regex;
 		Matcher match;
+		String metaScapeValue = "";
+		
+		if (metaScape) {
+			metaScapeValue = "\\b";
+		}
 
 		if (parametrosEntidadVO.getValoresIniciales() != null) {
 			for (int i = 0; i < parametrosEntidadVO.getValoresIniciales().size() && fin == -1; i++) {
-				regex = Pattern.compile("\\b" + Pattern.quote(parametrosEntidadVO.getValoresIniciales().get(i)) + "\\b",
-						Pattern.CASE_INSENSITIVE);
+				regex = Pattern.compile(
+							metaScapeValue + Pattern.quote(parametrosEntidadVO.getValoresIniciales().get(i)) + metaScapeValue,
+							Pattern.CASE_INSENSITIVE
+						);
 				match = regex.matcher(texto);
 				if (match.find()) {
 					fin = match.end();
@@ -427,7 +447,9 @@ public class Cotejar {
 		Pattern regex;
 		Matcher match;
 		ArrayList<Integer> listaIndicesProximosMayor = new ArrayList<Integer>();
-		if (parametrosEntidadVO.getValoresContenido() != null) {
+		if (parametrosEntidadVO.getValoresContenido().size() == 0) {
+			parrafo = texto;
+		} else if (parametrosEntidadVO.getValoresContenido() != null) {
 			// Buscar indices de palabras claves
 			Map<Integer, String> mapIndex = new TreeMap<Integer, String>();
 			for (int i = 0; i < parametrosEntidadVO.getValoresContenido().size(); i++) {

@@ -1,0 +1,51 @@
+{
+	"modelos": [
+		{
+			"modelo": "ner-recibo",
+			"parametrosEntidades": [
+				{
+					"valoresFinales": [
+						""
+					],
+					"longitud": 200,
+					"entidades": ["FECHA_PAGO_RECIBO_AGUA", "FECHA_PAGO_RECIBO_ACTUALIZACION_AGUA"],
+					"expresionRegular": "(\\d{1,2})(\\/|-)(\\d{1,2})(\\/|-)(\\d{1,4})",
+					"valoresIniciales": [
+						"fecha"
+					],
+					"tipoReconocimiento": "reconocerEntidadExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 15,
+					"entidades": ["FOLIO_RECIBO_AGUA", "FOLIO_RECIBO_ACTUALIZACION_AGUA"],
+					"valoresFinales": [
+						""
+					],
+					"valoresIniciales": [
+						"FOLIO DE PAGO:",
+						"DE PAGO:",
+						"RECIBO DE PAGO",
+						"RECIBO DE PAGO:"
+					],
+					"tipoReconocimiento": "reconocerEntidadSiguienteNoMetaScape"
+				},
+				{
+					"posicion": "0",
+					"longitud": 200,
+					"entidades": ["CERTIFICADO_RECIBO_AGUA", "CERTIFICADO_RECIBO__ACTUALIZACION_AGUA"],
+					"valoresFinales": [
+						"ESTE REPORTE",
+						"ESTE REP"
+					],
+					"valoresIniciales": [
+						"MXP)",
+						"P)",
+						"MXP"
+					],
+					"tipoReconocimiento": "reconocerEntidadEntreTextoNoMetaScape"
+				}
+			]
+		}
+	]
+}

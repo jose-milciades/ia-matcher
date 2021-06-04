@@ -26,6 +26,8 @@ import java.util.stream.Stream;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ResourceUtils;
 
 import com.edi.ia.ner.modelo.ModeloNerVO;
 import com.edi.ia.ner.modelo.ModelosNerVO;
@@ -47,7 +49,8 @@ public class Archivo {
 		String archivoConfiguracion = "";
 		String nombreArchivo = this.leerIndiceModelos(ruta + VariablesGlobales.NOMBRE_ARCHIVO_INDICE_MODELOS)
 				.get(modelo);
-		try (Stream<String> stream = Files.lines(Paths.get(ruta + nombreArchivo))) {
+
+		try (Stream<String> stream = Files.lines(Paths.get(new ClassPathResource(ruta + nombreArchivo).getFile().toString()))) {
 			Iterator<String> lineas = stream.iterator();
 			while (lineas.hasNext()) {
 				archivoConfiguracion += lineas.next().toString().trim();
@@ -70,10 +73,9 @@ public class Archivo {
 	}
 
 	public Map<String, String> leerIndiceModelos(String ruta) throws IOException, JsonSyntaxException {
-
-		JsonReader getLocalJsonFile = new JsonReader(new FileReader(ruta));
-		Type mapTokenType = new TypeToken<Map<String, String>>() {
-		}.getType();
+		File resource = new ClassPathResource(ruta).getFile();
+		JsonReader getLocalJsonFile = new JsonReader(new FileReader(resource));
+		Type mapTokenType = new TypeToken<Map<String, String>>() { }.getType();
 		Map<String, String> jsonMap = new Gson().fromJson(getLocalJsonFile, mapTokenType);
 		System.out.println(jsonMap);
 		return jsonMap;
