@@ -3,6 +3,7 @@ package com.edi.ia.ner.util;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +27,7 @@ import java.util.stream.Stream;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
 
@@ -50,14 +52,7 @@ public class Archivo {
 		String nombreArchivo = this.leerIndiceModelos(ruta + VariablesGlobales.NOMBRE_ARCHIVO_INDICE_MODELOS)
 				.get(modelo);
 
-		ClassLoader classLoader = getClass().getClassLoader();
-		try (Stream<String> stream = Files.lines(Paths.get(classLoader.getResource(ruta+nombreArchivo).getFile().toString()))) {
-			Iterator<String> lineas = stream.iterator();
-			while (lineas.hasNext()) {
-				archivoConfiguracion += lineas.next().toString().trim();
-			}
-			modelosNerVO = gson.fromJson(archivoConfiguracion, ModelosNerVO.class);
-		}
+		modelosNerVO = gson.fromJson(readJson(ruta+nombreArchivo), ModelosNerVO.class);
 
 		for (ModeloNerVO modeloNerVO : modelosNerVO.getModelos()) {
 			Map<String, ParametrosEntidadVO> map = new TreeMap<String, ParametrosEntidadVO>();
@@ -74,13 +69,16 @@ public class Archivo {
 	}
 
 	public Map<String, String> leerIndiceModelos(String ruta) throws IOException, JsonSyntaxException {
-		ClassLoader classLoader = getClass().getClassLoader();
-		File resource = new File(classLoader.getResource(ruta).getFile());
-		JsonReader getLocalJsonFile = new JsonReader(new FileReader(resource));
+		JsonReader getLocalJsonFile = readJson(ruta); 
 		Type mapTokenType = new TypeToken<Map<String, String>>() { }.getType();
 		Map<String, String> jsonMap = new Gson().fromJson(getLocalJsonFile, mapTokenType);
 		System.out.println(jsonMap);
 		return jsonMap;
+	}
+	
+	public JsonReader readJson(String ruta) throws FileNotFoundException {
+		File resource = new File(getClass().getResource(ruta).getFile());
+		return new JsonReader(new FileReader(resource));
 	}
 
 	/**
