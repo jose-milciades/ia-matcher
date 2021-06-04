@@ -41,6 +41,8 @@ import java.lang.reflect.Type;
 public class Archivo {
 
 	private final static Logger LOGGER = Logger.getLogger("com.solera.audamedic.estadocuentasap.util.Archivo ");
+	
+	private ClassLoader classLoader = getClass().getClassLoader();
 
 	public ModelosNerVO leerParametrosEntidades(String ruta, String modelo) throws IOException, JsonSyntaxException {
 		Gson gson = new Gson();
@@ -50,7 +52,7 @@ public class Archivo {
 		String nombreArchivo = this.leerIndiceModelos(ruta + VariablesGlobales.NOMBRE_ARCHIVO_INDICE_MODELOS)
 				.get(modelo);
 
-		try (Stream<String> stream = Files.lines(Paths.get(new ClassPathResource(ruta + nombreArchivo).getFile().toString()))) {
+		try (Stream<String> stream = Files.lines(Paths.get(this.classLoader.getResource(ruta+nombreArchivo).getFile().toString()))) {
 			Iterator<String> lineas = stream.iterator();
 			while (lineas.hasNext()) {
 				archivoConfiguracion += lineas.next().toString().trim();
@@ -73,7 +75,7 @@ public class Archivo {
 	}
 
 	public Map<String, String> leerIndiceModelos(String ruta) throws IOException, JsonSyntaxException {
-		File resource = new ClassPathResource(ruta).getFile();
+		File resource = new File(this.classLoader.getResource(ruta).getFile());
 		JsonReader getLocalJsonFile = new JsonReader(new FileReader(resource));
 		Type mapTokenType = new TypeToken<Map<String, String>>() { }.getType();
 		Map<String, String> jsonMap = new Gson().fromJson(getLocalJsonFile, mapTokenType);
