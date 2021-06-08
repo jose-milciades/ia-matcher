@@ -27,8 +27,10 @@ public class Utilidad {
 		return sb.toString();
 	}
 
-	public String darFormatoTexto(String texto) {
+	public String darFormatoTexto(String texto, boolean mantenerSaltoLinea) {
+		if(!mantenerSaltoLinea) {
 		texto = texto.replaceAll("\\n", " ");
+		}
 		texto = texto.replaceAll(" +", " ");
 		texto = texto.replaceAll("- -", "-");
 		texto = texto.replaceAll("-+", "-");

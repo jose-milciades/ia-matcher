@@ -7,18 +7,22 @@
 					"valoresFinales": [
 						""
 					],
-					"longitud": 200,
-					"entidades": ["FECHA_PAGO_RECIBO_AGUA", "FECHA_PAGO_RECIBO_ACTUALIZACION_AGUA"],
-					"expresionRegular": "(\\d{1,2})(\\/|-)(\\d{1,2})(\\/|-)(\\d{1,4})",
-					"valoresIniciales": [
-						"fecha"
+					"longitud": 50,
+					"entidades": [
+						"FECHA_PAGO_RECIBO_AGUA",
+						"FECHA_PAGO_RECIBO_ACTUALIZACION_AGUA"
 					],
-					"tipoReconocimiento": "reconocerEntidadExpresionRegular"
+					"expresionRegular": "(\\d{1,2})(\\/|-)(\\d{1,2})(\\/|-)(\\d{1,4})",
+					"expresionRegularValoresIniciales": "(?i)( FECHA-| FECHA:|FECHA :| FECHA )",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
 				},
 				{
 					"posicion": "0",
 					"longitud": 15,
-					"entidades": ["FOLIO_RECIBO_AGUA", "FOLIO_RECIBO_ACTUALIZACION_AGUA"],
+					"entidades": [
+						"FOLIO_RECIBO_AGUA",
+						"FOLIO_RECIBO_ACTUALIZACION_AGUA"
+					],
 					"valoresFinales": [
 						""
 					],
@@ -33,7 +37,10 @@
 				{
 					"posicion": "0",
 					"longitud": 200,
-					"entidades": ["CERTIFICADO_RECIBO_AGUA", "CERTIFICADO_RECIBO__ACTUALIZACION_AGUA"],
+					"entidades": [
+						"CERTIFICADO_RECIBO_AGUA",
+						"CERTIFICADO_RECIBO__ACTUALIZACION_AGUA"
+					],
 					"valoresFinales": [
 						"ESTE REPORTE",
 						"ESTE REP"
@@ -44,6 +51,99 @@
 						"MXP"
 					],
 					"tipoReconocimiento": "reconocerEntidadEntreTextoNoMetaScape"
+				},
+				
+				
+				{
+					"entidades": [
+						"IDENTIFICADOR_ESTADO_RECIBO_PREDIO",
+						"IDENTIFICADOR_ESTADO_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"expresionRegular": "\\b(?i)(AGUAS CALIENTES|BAJA CALIFORNIA SUR|BAJA CALIFORNIA|CAMPECHE|COAHUILA|COLIMA|CHIAPAS|CHIHUAHUA|DURANGO|DISTRITO FEDERAL|GUANAJUATO|GUERRERO|HIDALGO|JALISCO|MÉXICO|MéXICO|MEXICO|MICHOACáN|MICHOACÁN|MICHOACAN|MORELOS|NAYARIT|NUEVO LEóN|NUEVO LEÓN|NUEVO LEON|OAXACA|PUEBLA|QUERéTARO|QUERÉTARO|QUERETARO|QUINTANA ROO|SAN LUIS POTOSí|SAN LUIS POTOSÍ|SAN LUIS POTOSI|SINALOA|SONORA|TABASCO|TAMAULIPAS|TLAXCALA|VERACRUZ|YUCATáN|YUCATÁN|YUCATAN|ZACATECAS)\\b",
+					"tipoReconocimiento": "reconocerEntidadExpresionRegular"
+				},
+				{
+					"entidades": [
+						"LUGAR_PAGO_RECIBO_PREDIO",
+						"LUGAR_PAGO_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"mantenerSaltoLinea":true,
+					"expresionRegularValoresIniciales": "\\b(?i)(MUNICIPIO DE)\\b",
+					"expresionRegularValoresFinales": "(\\b(?i)(TESORERIA|TESORERÍA|TESORERíA)\\b)|\\n([a-zA-Z-zÁÉÍÓÚñáéíóúÑ' ,.-]*)+(\\nCOMPROBANTE)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+				
+					"posicion": "0",
+					"longitud": 50,
+					"entidades": [
+						"CLAVE_CATASTRAL_RECIBO_PREDIO",
+						"CLAVE_CATASTRAL_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(CUENTA:|CUENTA :|CUENTA|FOLIO:| FOLIO :)",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				
+				{
+					"posicion": "0",
+					"longitud": 50,
+					"entidades": [
+						"FECHA_PAGO_RECIBO_PREDIO",
+						"FECHA_PAGO_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)( FECHA-| FECHA:|FECHA :| FECHA )",
+					"expresionRegular": "(\\d{1,2})(\\/|-)(\\d{1,2})(\\/|-)(\\d{1,4})",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				{
+					"entidades": [
+						"NOMBRE_TITULAR_RECIBO_PREDIO",
+						"NOMBRE_TITULAR_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"mantenerSaltoLinea":true,
+					"posicion": "2",
+					"expresionRegularValoresIniciales": "((?i)(NOMBRE:|NOMBRE :| NOMBRE ))|(\\b(?i)(MUNICIPIO DE )([a-zA-Z-zÁÉÍÓÚñáéíóúÑ' ,.-]*)\\n)",
+					"expresionRegularValoresFinales": "\\b(?i)(DIRECCIÓN|DIRECCIóN|DIRECCION|COMPROBANTE)\\b",
+					"expresionRegular": "([a-zA-Z-zÁÉÍÓÚñáéíóúÑ' ,.-]*)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"entidades": [
+						"CERTIFICADO_RECIBO_PREDIO",
+						"CERTIFICADO_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(CERTIFICADO DE INGRESOS|Referencia CIE:)",
+					"expresionRegularValoresFinales": "(?i)(FECHA|Autorización|Autorizacion|AutorizaciÒn)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"entidades": [
+						"DOMICILIO_RECIBO_PREDIO",
+						"DOMICILIO_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(DIRECCIÓN|DIRECCIóN|DIRECCION)",
+					"expresionRegularValoresFinales": "(?i)(RFC|VARIOS)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"entidades": [
+						"TIPO_PAGO_RECIBO_PREDIO",
+						"TIPO_PAGO_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)( OBSERVACIONES:|OBSERVACIONES :|OBSERVACIONES|OBSERVACIONES|CONCEPTO:)",
+					"expresionRegularValoresFinales": "\\b(?i)(CONCEPTO DE PAGO|REFERENCIA)\\b",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				
+				{
+					"posicion": "0",
+					"longitud": 10,
+					"entidades": [
+						"TOTAL_PAGO_RECIBO_PREDIO",
+						"TOTAL_PAGO_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)( TOTAL DE PAGO :| TOTAL DE PAGO:|TOTAL DE PAGO| TOTAL PAGO :| TOTAL PAGO:| TOTAL PAGO|IMPORTE:|IMPORTE)",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
 				}
 			]
 		}

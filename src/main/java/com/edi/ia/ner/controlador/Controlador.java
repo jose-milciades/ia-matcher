@@ -72,17 +72,17 @@ public class Controlador implements ControladorServicio {
 		Cotejar cotejar = new Cotejar();
 
 		// Dar formato a los textos de entrada
-		creditoVO.setTextoPropiedad(utilidad.darFormatoTexto(creditoVO.getTextoPropiedad().toUpperCase()));
+		creditoVO.setTextoPropiedad(utilidad.darFormatoTexto(creditoVO.getTextoPropiedad().toUpperCase(),false));
 		creditoVO
-				.setTextoAcreditadoAnexoB(utilidad.darFormatoTexto(creditoVO.getTextoAcreditadoAnexoB().toUpperCase()));
-		creditoVO.setTextoConyugeAnexoB(utilidad.darFormatoTexto(creditoVO.getTextoConyugeAnexoB().toUpperCase()));
+				.setTextoAcreditadoAnexoB(utilidad.darFormatoTexto(creditoVO.getTextoAcreditadoAnexoB().toUpperCase(),false));
+		creditoVO.setTextoConyugeAnexoB(utilidad.darFormatoTexto(creditoVO.getTextoConyugeAnexoB().toUpperCase(),false));
 
 		try {
 			ModelosNerVO modelosNerVO = utilidad.obtenerModelosNer(VariablesGlobales.MODELO_NER_GRUPO_ENTIDADES);
 			// Identificar si la escritura es con Anexos
 			boolean escrituraConAnexoB = false;
-			if (this.buscarValorEntidad(modelosNerVO, VariablesGlobales.MODELO_NER_GRUPO_ENTIDADES, VariablesGlobales.GRUPO_ANEXO_B,
-					creditoVO.getTextoAcreditadoAnexoB()) != null) {
+			if (this.buscarValorEntidad(modelosNerVO, VariablesGlobales.MODELO_NER_GRUPO_ENTIDADES,
+					VariablesGlobales.GRUPO_ANEXO_B, creditoVO.getTextoAcreditadoAnexoB()) != null) {
 				escrituraConAnexoB = true;
 			}
 
@@ -157,9 +157,10 @@ public class Controlador implements ControladorServicio {
 	@Override
 	public GrupoEntidadesVO reconocerParrafo(GrupoEntidadesVO grupoEntidad) {
 
-		grupoEntidad.setTexto(utilidad.darFormatoTexto(grupoEntidad.getTexto()));
+		grupoEntidad.setTexto(utilidad.darFormatoTexto(grupoEntidad.getTexto(),false));
 		if (grupoEntidad.getTextoPaginaActual() != null) {
-			grupoEntidad.setTextoPaginaActual(utilidad.darFormatoTexto(grupoEntidad.getTextoPaginaActual()));
+			grupoEntidad.setTextoPaginaActual(utilidad.darFormatoTexto(grupoEntidad.getTextoPaginaActual(),false
+				));
 		}
 		ArrayList<String> entidadesPreviamenteProcesadas = new ArrayList<String>();
 
@@ -184,6 +185,9 @@ public class Controlador implements ControladorServicio {
 
 				if (parametrosEntidadVO != null
 						&& entidadesPreviamenteProcesadas.contains(grupoEntidadVO.getGrupoEntidad()) == false) {
+					
+					
+					
 					// validar si el texto tine la cantidad minima de caractes para hacer la
 					// busqueda de la entidad, cero indica hacer la busqueda sin importar la
 					// longitud del texto
@@ -196,7 +200,7 @@ public class Controlador implements ControladorServicio {
 					}
 				}
 				entidadesPreviamenteProcesadas.add(grupoEntidadVO.getGrupoEntidad());
-				
+
 			}
 		} catch (JsonSyntaxException | IOException e) {
 			// TODO Auto-generated catch block
@@ -214,14 +218,14 @@ public class Controlador implements ControladorServicio {
 		TASA_INTERES_ORDINARIO = null;
 		TASA_INTERES_MORATORIO = null;
 		Cotejar cotejar = new Cotejar();
+		
 
-		documento.setTexto(utilidad.darFormatoTexto(documento.getTexto()));
+		
 		try {
-			
 
 			// Recorrer los modelos
 			documento.getModelos().stream().forEach(modeloVO -> {
-				
+
 				// Obtener nodelos con parametros de configuración
 				ModelosNerVO modelosNerVO = null;
 				try {
@@ -247,19 +251,21 @@ public class Controlador implements ControladorServicio {
 					// siguiente hoja
 					if (parametrosEntidadVO != null
 							&& entidadesPreviamenteProcesadas.contains(entidadVO.getEntidad()) == false) {
+						
+						String texto = utilidad.darFormatoTexto(documento.getTexto(),parametrosEntidadVO.isMantenerSaltoLinea());
 
 						// Buscar valor de entidades relacionadas con colindacias
 						if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadMedidasColindancias")) {
 							ResultadoVO resultadoVO = cotejar.reconocerEntidadMedidasColindancias(parametrosEntidadVO,
-									documento.getTexto());
-								this.completarEntidadesRelacionadas(resultadoVO, parametrosEntidadVO,
-										modeloVO.getEntidades(), entidadesPreviamenteProcesadas);
-							
+									texto);
+							this.completarEntidadesRelacionadas(resultadoVO, parametrosEntidadVO,
+									modeloVO.getEntidades(), entidadesPreviamenteProcesadas);
+
 						}
 
 						else {
 							// Buscar valor de entidades individuales
-							entidadVO.setValor(this.buscarValorEntidad(parametrosEntidadVO, documento.getTexto()));
+							entidadVO.setValor(this.buscarValorEntidad(parametrosEntidadVO, texto));
 							this.aplicarReglasParticularesEntidad(entidadVO, modeloVO.getEntidades(),
 									parametrosEntidadVO);
 						}
@@ -293,31 +299,30 @@ public class Controlador implements ControladorServicio {
 		documento.setTexto(null);
 		return documento;
 	}
-	
+
 	@Override
 	public CreditoVO reconcerFechasOmisos(CreditoVO creditoVO) {
 		Cotejar cotejar = new Cotejar();
 		try {
-				if(creditoVO.getEntidades().size()==1) {
-					EntidadVO entidadVO = creditoVO.getEntidades().get(0);
-					// Obtener nodelos con parametros de configuración
-					ModelosNerVO modelosNerVO = utilidad.obtenerModelosNer(entidadVO.getModelo());
-						// Obtener los parametros de las entidades por modelo
-						Map<String, ParametrosEntidadVO> mapParametrosEntidadVO = utilidad
-								.obtenerParametrosEntidad(modelosNerVO, entidadVO.getModelo());
-					ParametrosEntidadVO parametrosEntidadVO = mapParametrosEntidadVO.get(entidadVO.getEntidad());
-					if(parametrosEntidadVO!=null) {
-						
-						entidadVO.setEntidad(cotejar.reconocerEntidadFechaOmisos(parametrosEntidadVO, creditoVO.getHojasCertificado()));
-					}
-				}
-		}
-	 catch (JsonSyntaxException | IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+			if (creditoVO.getEntidades().size() == 1) {
+				EntidadVO entidadVO = creditoVO.getEntidades().get(0);
+				// Obtener nodelos con parametros de configuración
+				ModelosNerVO modelosNerVO = utilidad.obtenerModelosNer(entidadVO.getModelo());
+				// Obtener los parametros de las entidades por modelo
+				Map<String, ParametrosEntidadVO> mapParametrosEntidadVO = utilidad
+						.obtenerParametrosEntidad(modelosNerVO, entidadVO.getModelo());
+				ParametrosEntidadVO parametrosEntidadVO = mapParametrosEntidadVO.get(entidadVO.getEntidad());
+				if (parametrosEntidadVO != null) {
 
-		
+					entidadVO.setEntidad(
+							cotejar.reconocerEntidadFechaOmisos(parametrosEntidadVO, creditoVO.getHojasCertificado()));
+				}
+			}
+		} catch (JsonSyntaxException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		return creditoVO;
 	}
 
@@ -361,10 +366,15 @@ public class Controlador implements ControladorServicio {
 		String valorEntidad = null;
 		if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadEntreTexto")) {
 			valorEntidad = cotejar.reconocerEntidadEntreTexto(parametrosEntidadVO, texto, true);
+		} else if (parametrosEntidadVO.getTipoReconocimiento()
+				.equals("reconocerEntidadExpresionRegularValoresIniciales")) {
+			valorEntidad = cotejar.reconocerEntidadExpresionRegularValoresIniciales(parametrosEntidadVO, texto);
 		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadExpresionRegular")) {
 			valorEntidad = cotejar.reconocerEntidadExpresionRegular(parametrosEntidadVO, texto);
 		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadSiguiente")) {
 			valorEntidad = cotejar.reconocerEntidadSiguiente(parametrosEntidadVO, texto, true);
+		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadSiguienteExpresionRegular")) {
+			valorEntidad = cotejar.reconocerEntidadSiguienteExpresionRegular(parametrosEntidadVO, texto, true);
 		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadLista")) {
 			valorEntidad = cotejar.reconocerEntidadLista(parametrosEntidadVO, texto);
 			// } else if
@@ -388,14 +398,14 @@ public class Controlador implements ControladorServicio {
 		// recibos
 		else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadSiguienteNoMetaScape")) {
 			valorEntidad = cotejar.reconocerEntidadSiguiente(parametrosEntidadVO, texto, false);
-		} else if(parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadEntreTextoNoMetaScape")) {
+		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadEntreTextoNoMetaScape")) {
 			valorEntidad = cotejar.reconocerEntidadEntreTexto(parametrosEntidadVO, texto, false);
 		}
 
 		if (valorEntidad != null) {
 			valorEntidad = valorEntidad.trim();
-			valorEntidad = valorEntidad.toUpperCase();
-
+			if (!parametrosEntidadVO.getTipoReconocimiento().equals("reconocerParrafo"))
+				valorEntidad = valorEntidad.toUpperCase();
 		}
 
 		// Float f = Float.parseFloat("5.2");
@@ -419,16 +429,19 @@ public class Controlador implements ControladorServicio {
 			documento.setTipoDemanda("");
 			try {
 				Map<String, ParametrosEntidadVO> mapParametrosEntidadVO = new TreeMap<String, ParametrosEntidadVO>();
-				ModelosNerVO modelosNerVO = archivo
-						.leerParametrosEntidades(ParametrosConfiguracionVO.rutaParametrosEntidad, VariablesGlobales.MODELO_NER_RECONOCER_DEMANDA);
+				ModelosNerVO modelosNerVO = archivo.leerParametrosEntidades(
+						ParametrosConfiguracionVO.rutaParametrosEntidad,
+						VariablesGlobales.MODELO_NER_RECONOCER_DEMANDA);
 
 				int index = -1;
 				for (int i = 0; i < modelosNerVO.getModelos().size() && index == -1; i++) {
 
-					if (modelosNerVO.getModelos().get(i).getModelo().equals(VariablesGlobales.MODELO_NER_RECONOCER_DEMANDA)) {
+					if (modelosNerVO.getModelos().get(i).getModelo()
+							.equals(VariablesGlobales.MODELO_NER_RECONOCER_DEMANDA)) {
 						mapParametrosEntidadVO = modelosNerVO.getModelos().get(i).getMap();
 						index = 1;
-						ParametrosEntidadVO parametrosEntidadVO = mapParametrosEntidadVO.get(VariablesGlobales.ENTIDAD_TIPO_DEMANDA);
+						ParametrosEntidadVO parametrosEntidadVO = mapParametrosEntidadVO
+								.get(VariablesGlobales.ENTIDAD_TIPO_DEMANDA);
 						if (cotejar.reconocerParrafo(parametrosEntidadVO, documento.getTexto()) != "") {
 							documento.setTipoDemanda(VariablesGlobales.CODIGO_DEMANDA_CONSENTIMIENTO);
 						}
@@ -507,7 +520,7 @@ public class Controlador implements ControladorServicio {
 		} else {
 			for (EntidadVO entidadVO : listaEntidadesVO) {
 				entidadVO.setValor(null);
-				if(!entidadesPreviamenteProcesadas.contains(entidadVO.getEntidad())){
+				if (!entidadesPreviamenteProcesadas.contains(entidadVO.getEntidad())) {
 					entidadesPreviamenteProcesadas.add(entidadVO.getEntidad());
 				}
 			}
