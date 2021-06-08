@@ -25,9 +25,18 @@ public class ParametrosEntidadVO {
 	private ArrayList<String> valoresContenido;
 	private ArrayList<String> valoresOmitir;
 	private ArrayList<String> valoresRemoverAlFinal;
+	private boolean mantenerSaltoLinea;
 	
 	
 	
+	public boolean isMantenerSaltoLinea() {
+		return mantenerSaltoLinea;
+	}
+
+	public void setMantenerSaltoLinea(boolean mantenerSaltoLinea) {
+		this.mantenerSaltoLinea = mantenerSaltoLinea;
+	}
+
 	public int getLongitudGrupoColindancia() {
 		return longitudGrupoColindancia;
 	}

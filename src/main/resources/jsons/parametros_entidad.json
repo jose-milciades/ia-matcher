@@ -64,7 +64,7 @@
 						"TIP DE CREDITO",
 						"TIP DE CRÉDITO"
 					],
-					"tipoReconocimiento": "reconocerEntidadExpresionRegular"
+					"tipoReconocimiento": "reconocerEntidadExpresionRegularValoresIniciales"
 				},
 				{
 					"posicion": "0",
@@ -92,7 +92,7 @@
 						"EMISION",
 						"FECHA"
 					],
-					"tipoReconocimiento": "reconocerEntidadExpresionRegular"
+					"tipoReconocimiento": "reconocerEntidadExpresionRegularValoresIniciales"
 				},
 				{
 					"valoresFinales": [
@@ -104,7 +104,7 @@
 					"valoresIniciales": [
 						"CAPITAL"
 					],
-					"tipoReconocimiento": "reconocerEntidadExpresionRegular"
+					"tipoReconocimiento": "reconocerEntidadExpresionRegularValoresIniciales"
 				},
 				{
 					"valoresFinales": [
@@ -117,7 +117,7 @@
 						"CREDITO",
 						"CRÉDITO"
 					],
-					"tipoReconocimiento": "reconocerEntidadExpresionRegular"
+					"tipoReconocimiento": "reconocerEntidadExpresionRegularValoresIniciales"
 				},
 				{
 					"valoresFinales": [
@@ -129,7 +129,7 @@
 					"valoresIniciales": [
 						"INTERESES"
 					],
-					"tipoReconocimiento": "reconocerEntidadExpresionRegular"
+					"tipoReconocimiento": "reconocerEntidadExpresionRegularValoresIniciales"
 				},
 				{
 					"posicion": "0",
@@ -159,7 +159,7 @@
 					"tipoReconocimiento": "reconocerEntidadLista"
 				},
 				{
-					"tipoReconocimiento": "reconocerEntidadExpresionRegular",
+					"tipoReconocimiento": "reconocerEntidadExpresionRegularValoresIniciales",
 					"longitud": 50,
 					"entidades": ["CURP_ACREDITADO"],
 					"expresionRegular": "\\b[0-9A-Z]{16}\\s{0,1}[0-9A-Z]{0,1}\\s{0,1}[0-9A-Z]{0,1}\\b",
@@ -171,7 +171,7 @@
 					]
 				},
 				{
-					"tipoReconocimiento": "reconocerEntidadExpresionRegular",
+					"tipoReconocimiento": "reconocerEntidadExpresionRegularValoresIniciales",
 					"longitud": 50,
 					"entidades": ["RFC_ACREDITADO"],
 					"expresionRegular": "\\b[0-9A-Z]{10}((-)?([A-Z\\d]{3}))?\\b",
