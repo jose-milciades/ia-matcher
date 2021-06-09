@@ -400,7 +400,10 @@ public class Controlador implements ControladorServicio {
 			valorEntidad = cotejar.reconocerEntidadSiguiente(parametrosEntidadVO, texto, false);
 		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("reconocerEntidadEntreTextoNoMetaScape")) {
 			valorEntidad = cotejar.reconocerEntidadEntreTexto(parametrosEntidadVO, texto, false);
+		} else if (parametrosEntidadVO.getTipoReconocimiento().equals("enviarVacio")) {
+			valorEntidad = "";
 		}
+
 
 		if (valorEntidad != null) {
 			valorEntidad = valorEntidad.trim();
@@ -490,7 +493,7 @@ public class Controlador implements ControladorServicio {
 		if (entidadVO.getValor() == null) {
 			entidadVO.setValor(" ");
 		} else {
-			if (entidadVO.getValor() != " ") {
+			if (!entidadVO.getValor().equals(" ")) {
 				entidadVO.setValor(entidadVO.getValor().trim());
 				entidadVO.setValor(utilidad.removerValoresAlFinal(parametrosEntidadVO.getValoresRemoverAlFinal(),
 						entidadVO.getValor()));
