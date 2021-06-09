@@ -92,7 +92,12 @@ public class Cotejar {
 			match = regex.matcher(texto);
 			if (match.find()) {
 				inicio = match.end();
-				fin = inicio + parametrosEntidadVO.getLongitud();
+				if(parametrosEntidadVO.getLongitud() == 0) {
+					fin = texto.length();
+					return texto.substring(inicio, fin).trim();
+				}else {
+					fin = inicio + parametrosEntidadVO.getLongitud();
+				}
 			}
 		}
 		if (fin > inicio) {

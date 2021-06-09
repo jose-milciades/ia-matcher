@@ -404,6 +404,10 @@ public class Controlador implements ControladorServicio {
 
 		if (valorEntidad != null) {
 			valorEntidad = valorEntidad.trim();
+			if (parametrosEntidadVO.getAgregarTextoInicial() != null)
+				valorEntidad = parametrosEntidadVO.getAgregarTextoInicial() + valorEntidad;
+			if (parametrosEntidadVO.getAgregarTextoFinal() != null)
+				valorEntidad = valorEntidad + parametrosEntidadVO.getAgregarTextoFinal();
 			if (!parametrosEntidadVO.getTipoReconocimiento().equals("reconocerParrafo"))
 				valorEntidad = valorEntidad.toUpperCase();
 		}
