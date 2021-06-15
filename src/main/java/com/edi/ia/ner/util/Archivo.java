@@ -3,9 +3,11 @@ package com.edi.ia.ner.util;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.nio.file.CopyOption;
@@ -26,6 +28,9 @@ import java.util.stream.Stream;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ResourceUtils;
 
 import com.edi.ia.ner.modelo.ModeloNerVO;
 import com.edi.ia.ner.modelo.ModelosNerVO;
@@ -47,13 +52,8 @@ public class Archivo {
 		String archivoConfiguracion = "";
 		String nombreArchivo = this.leerIndiceModelos(ruta + VariablesGlobales.NOMBRE_ARCHIVO_INDICE_MODELOS)
 				.get(modelo);
-		try (Stream<String> stream = Files.lines(Paths.get(ruta + nombreArchivo))) {
-			Iterator<String> lineas = stream.iterator();
-			while (lineas.hasNext()) {
-				archivoConfiguracion += lineas.next().toString().trim();
-			}
-			modelosNerVO = gson.fromJson(archivoConfiguracion, ModelosNerVO.class);
-		}
+
+		modelosNerVO = gson.fromJson(readJson(ruta+nombreArchivo), ModelosNerVO.class);
 
 		for (ModeloNerVO modeloNerVO : modelosNerVO.getModelos()) {
 			Map<String, ParametrosEntidadVO> map = new TreeMap<String, ParametrosEntidadVO>();
@@ -70,13 +70,16 @@ public class Archivo {
 	}
 
 	public Map<String, String> leerIndiceModelos(String ruta) throws IOException, JsonSyntaxException {
-
-		JsonReader getLocalJsonFile = new JsonReader(new FileReader(ruta));
-		Type mapTokenType = new TypeToken<Map<String, String>>() {
-		}.getType();
+		JsonReader getLocalJsonFile = readJson(ruta); 
+		Type mapTokenType = new TypeToken<Map<String, String>>() { }.getType();
 		Map<String, String> jsonMap = new Gson().fromJson(getLocalJsonFile, mapTokenType);
 		System.out.println(jsonMap);
 		return jsonMap;
+	}
+	
+	public JsonReader readJson(String ruta) throws FileNotFoundException {
+		InputStream in = getClass().getResourceAsStream(ruta); 
+		return new JsonReader(new InputStreamReader(in));
 	}
 
 	/**

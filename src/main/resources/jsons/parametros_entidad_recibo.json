@@ -1,0 +1,601 @@
+{
+	"modelos": [
+		{
+			"modelo": "ner-recibo",
+			"parametrosEntidades": [
+				{
+					"entidades": [
+						"LUGAR_PAGO_RECIBO_AGUA",
+						"LUGAR_PAGO_RECIBO_ACTUALIZACION_AGUA"
+					],
+					"mantenerSaltoLinea":false,
+					"longitud": 100,
+					"expresionRegularValoresIniciales": "(?i)(JUNTA MUNICIPAL DE AGUA Y SANEAMIENTO DE|JUNTA MUNICIPAL DE AGUA Y BANEAMIENTO|JUNTA MUNICIPAL DE AGUA Y BANEAMENTO)",
+					"expresionRegularValoresFinales": "((?i)(JUNTA))|(?i)(COMPROBANTE)",
+					"expresionRegular": "([a-zA-Z-zÁÉÍÓÚñáéíóúÑ' ,.-]*)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"entidades": [
+						"FOLIO_RECIBO_AGUA",
+						"FOLIO_RECIBO_ACTUALIZACION_AGUA"
+					],
+					"mantenerSaltoLinea":false,
+					"longitud": 70,
+					"expresionRegularValoresIniciales": "(?i)(FOLIO DE PAGO:|DE PAGO:|RECIBO DE PAGO|RECIBO DE PAGO:)",
+					"expresionRegularValoresFinales": "(?i)(NOMBRE|FECHA)",
+					"expresionRegular": "^[0-9]*",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"entidades": [
+						"NOMBRE_TITULAR_RECIBO_AGUA",
+						"NOMBRE_TITULAR_RECIBO_ACTUALIZACION_AGUA"
+					],
+					"mantenerSaltoLinea":false,
+					"posicion": "0",
+					"expresionRegularValoresIniciales": "(?i)(NOMBRE:|NOMBRE :|NOMBRE|CLIENTE:|CLIENTE :|CLIENTE)",
+					"expresionRegularValoresFinales": "(?i)(REFERENCIA|RFC|R.F.C.|R.F.C)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "3",
+					"entidades": [
+						"CERTIFICADO_RECIBO_AGUA",
+						"CERTIFICADO_RECIBO__ACTUALIZACION_AGUA"
+					],
+					"expresionRegularValoresIniciales": "(?i)(MXP\\)|P\\)|MXP)",
+					"expresionRegularValoresFinales": "(?i)(ESTE REPORTE|ESTE REP)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"DOMICILIO_RECIBO_AGUA",
+						"DOMICILIO_RECIBO_ACTUALIZACION_AGUA"
+					],
+					"expresionRegularValoresIniciales": "(?i)(DOM.FISC:|DOM.FISC)",
+					"expresionRegularValoresFinales": "(?i)(DOMLOTE|DOM.LOTE|DOM.)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"TIPO_PAGO_RECIBO_AGUA",
+						"TIPO_PAGO_RECIBO_ACTUALIZACION_AGUA"
+					],
+					"expresionRegularValoresIniciales": "(\\d{1,2})(\\/|-)(\\d{1,2})(\\/|-)(\\d{1,4})|(?i)(JUNTA)",
+					"expresionRegularValoresFinales": "(?i)(\\(ORIGINAL\\)|ORIGINAL|R.F.C|R.E.C|RFC|REC)",
+					"expresionRegular": "(?i)(JUNTA).*",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"TOTAL_PAGO_RECIBO_AGUA",
+						"TOTAL_PAGO_RECIBO_ACTUALIZACION_AGUA"
+					],
+					"expresionRegularValoresIniciales": "(?i)(COBRADO:|COBRADO|TOTAL:)",
+					"expresionRegularValoresFinales": "(?i)(TIPO|CONCEPTO)",
+					"expresionRegular": "([$](([ ])|\\d))([\\d,.]*)((?i)( MXP)|)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				
+				
+				{
+					"entidades": [
+						"IDENTIFICADOR_ESTADO_RECIBO_PREDIO",
+						"IDENTIFICADOR_ESTADO_RECIBO_ACTUALIZACION_PREDIO",
+						"IDENTIFICADOR_ESTADO_RECIBO_AGUA",
+						"IDENTIFICADOR_ESTADO_RECIBO_ACTUALIZACION_AGUA",
+						"IDENTIFICADOR_ESTADO_RECIBO_ISABI",
+						"IDENTIFICADOR_ESTADO_RECIBO_CLG_AVISO_PREVENTIVO",
+						"IDENTIFICADOR_ESTADO_RECIBO_CLG_SIN_HIPOTECA",
+						"IDENTIFICADOR_ESTADO_RECIBO_DERECHOS_REGISTRO",
+						"IDENTIFICADOR_ESTADO_RECIBO_CANCELACION_HIPOTECA"
+					],
+					"expresionRegular": "\\b(?i)(AGUAS CALIENTES|BAJA CALIFORNIA SUR|BAJA CALIFORNIA|CAMPECHE|COAHUILA|COLIMA|CHIAPAS|CHIHUAHUA|DURANGO|DISTRITO FEDERAL|GUANAJUATO|GUERRERO|HIDALGO|JALISCO|MÉXICO|MéXICO|MEXICO|MICHOACáN|MICHOACÁN|MICHOACAN|MORELOS|NAYARIT|NUEVO LEóN|NUEVO LEÓN|NUEVO LEON|OAXACA|PUEBLA|QUERéTARO|QUERÉTARO|QUERETARO|QUINTANA ROO|SAN LUIS POTOSí|SAN LUIS POTOSÍ|SAN LUIS POTOSI|SINALOA|SONORA|TABASCO|TAMAULIPAS|TLAXCALA|VERACRUZ|YUCATáN|YUCATÁN|YUCATAN|ZACATECAS)\\b",
+					"tipoReconocimiento": "reconocerEntidadExpresionRegular"
+				},
+				{
+					"entidades": [
+						"LUGAR_PAGO_RECIBO_PREDIO",
+						"LUGAR_PAGO_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"mantenerSaltoLinea":true,
+					"expresionRegularValoresIniciales": "\\b(?i)(MUNICIPIO DE)\\b",
+					"expresionRegularValoresFinales": "(\\b(?i)(TESORERIA|TESORERÍA|TESORERíA)\\b)|\\n([a-zA-Z-zÁÉÍÓÚñáéíóúÑ' ,.-]*)+(\\nCOMPROBANTE)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+				
+					"posicion": "0",
+					"longitud": 50,
+					"entidades": [
+						"CLAVE_CATASTRAL_RECIBO_PREDIO",
+						"CLAVE_CATASTRAL_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(CUENTA:|CUENTA :|CUENTA|FOLIO:| FOLIO :)",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				
+				{
+					"posicion": "0",
+					"longitud": 50,
+					"entidades": [
+						"FECHA_PAGO_RECIBO_PREDIO",
+						"FECHA_PAGO_RECIBO_ACTUALIZACION_PREDIO",
+						"FECHA_PAGO_RECIBO_AGUA",
+						"FECHA_PAGO_RECIBO_ACTUALIZACION_AGUA"
+					],
+					"expresionRegularValoresIniciales": "(?i)( FECHA-| FECHA:|FECHA :| FECHA | FECHA DE PAGO: | FECHA DE PAGO )",
+					"expresionRegular": "(\\d{1,2})(\\/|-)(\\d{1,2})(\\/|-)(\\d{1,4})",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				{
+					"entidades": [
+						"NOMBRE_TITULAR_RECIBO_PREDIO",
+						"NOMBRE_TITULAR_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"mantenerSaltoLinea":true,
+					"posicion": "2",
+					"expresionRegularValoresIniciales": "((?i)(NOMBRE:|NOMBRE :| NOMBRE ))|(\\b(?i)(MUNICIPIO DE )([a-zA-Z-zÁÉÍÓÚñáéíóúÑ' ,.-]*)\\n)",
+					"expresionRegularValoresFinales": "\\b(?i)(DIRECCIÓN|DIRECCIóN|DIRECCION|COMPROBANTE)\\b",
+					"expresionRegular": "([a-zA-Z-zÁÉÍÓÚñáéíóúÑ' ,.-]*)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"entidades": [
+						"CERTIFICADO_RECIBO_PREDIO",
+						"CERTIFICADO_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(CERTIFICADO DE INGRESOS|Referencia CIE:)",
+					"expresionRegularValoresFinales": "(?i)(FECHA|Autorización|Autorizacion|AutorizaciÒn)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"entidades": [
+						"DOMICILIO_RECIBO_PREDIO",
+						"DOMICILIO_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(DIRECCIÓN|DIRECCIóN|DIRECCION)",
+					"expresionRegularValoresFinales": "(?i)(RFC|VARIOS)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"entidades": [
+						"TIPO_PAGO_RECIBO_PREDIO",
+						"TIPO_PAGO_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)( OBSERVACIONES:|OBSERVACIONES :|OBSERVACIONES|OBSERVACIONES|CONCEPTO:)",
+					"expresionRegularValoresFinales": "\\b(?i)(CONCEPTO DE PAGO|REFERENCIA)\\b",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 10,
+					"entidades": [
+						"TOTAL_PAGO_RECIBO_PREDIO",
+						"TOTAL_PAGO_RECIBO_ACTUALIZACION_PREDIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)( TOTAL DE PAGO :| TOTAL DE PAGO:|TOTAL DE PAGO| TOTAL PAGO :| TOTAL PAGO:| TOTAL PAGO|IMPORTE:|IMPORTE)",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				
+				
+				{
+					"posicion": "0",
+					"longitud": 50,
+					"entidades": [
+						"RFC_EMISOR_RECIBO_HONORARIOS_AVALUO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(AG AVALUOS SA DE CV)",
+					"expresionRegularValoresFinales": "(?i)(REGIMEN FIS|REGIMEN FISCAL:)",
+					"expresionRegular": "AAV[^ ]*",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 50,
+					"entidades": [
+						"NOMBRE_EMISOR_RECIBO_HONORARIOS_AVALUO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(EMISOR:|EMISOR)",
+					"expresionRegularValoresFinales": "(?i)(AG AVALUOS SA DE CV)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"RFC_RECEPTOR_RECIBO_HONORARIOS_AVALUO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(PARA:)",
+					"expresionRegularValoresFinales": "(?i)(NOTAS:)",
+					"expresionRegular": "\\b(\\w+)$",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"NOMBRE_RECEPTOR_RECIBO_HONORARIOS_AVALUO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(PARA:)",
+					"expresionRegularValoresFinales": "(?i)(NOTAS:)",
+					"expresionRegular": ".*?(?=[\\wäöüß]+$)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 80,
+					"entidades": [
+						"FOLIO_FISCAL_RECIBO_HONORARIOS_AVALUO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(FOLIO FISCAL:)",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 80,
+					"entidades": [
+						"DESCRIPCION_RECIBO_HONORARIOS_AVALUO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(SERVICIOS)",
+					"expresionRegularValoresFinales": "((([0-9])+)(([.]|[,])[0-9]+)(([.][0-9]+)|))",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 50,
+					"entidades": [
+						"FECHA_FACTURA_RECIBO_HONORARIOS_AVALUO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(FECHA:)",
+					"expresionRegular": "(\\d{1,4})(\\/|-)(\\d{1,2})(\\/|-)(\\d{1,2})",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 80,
+					"entidades": [
+						"PRECIO_UNITARIO_RECIBO_HONORARIOS_AVALUO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(SERVICIOS)",
+					"expresionRegular": "((([0-9])+)(([.]|[,])[0-9]+)(([.][0-9]+)|))",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 30,
+					"entidades": [
+						"SUB_TOTAL_RECIBO_HONORARIOS_AVALUO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(SUBTOTAL: )",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 30,
+					"entidades": [
+						"IMPUESTO_TRASLADO_IVA_RECIBO_HONORARIOS_AVALUO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(IMPUESTOS)",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 30,
+					"entidades": [
+						"TOTAL_RECIBO_HONORARIOS_AVALUO"
+					],
+					"expresionRegularValoresIniciales": "\\b(?i)(TOTAL)\\b",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 0,
+					"entidades": [
+						"CADENA_COMPLEMENTO_CERTIFICACION_DIGITAL_SAT_RECIBO_HONORARIOS_AVALUO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(CERTIFICACIÓN DIGITAL DEL SAT:)",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"agregarTextoInicial": "Avaluos correspondientes a los expedientes: ",
+					"agregarTextoFinal": "",
+					"entidades": [
+						"CONDICIONES_PAGO_RECIBO_HONORARIOS_AVALUO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(NOTAS:)",
+					"expresionRegularValoresFinales": "(?i)(RESIDENCIA)",
+					"expresionRegular": "(\\d{3})(\\/).*",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				
+				
+				{
+					"posicion": "0",
+					"longitud": 30,
+					"entidades": [
+						"RFC_EMISOR_RECIBO_HONORARIOS_NOTARIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(RFC EMISOR:)",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"NOMBRE_EMISOR_RECIBO_HONORARIOS_NOTARIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(NOMBRE EMISOR:)",
+					"expresionRegularValoresFinales": "(?i)(NO. DE SERIE)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 30,
+					"entidades": [
+						"RFC_RECEPTOR_RECIBO_HONORARIOS_NOTARIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(RFC RECEPTOR:)",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"NOMBRE_RECEPTOR_RECIBO_HONORARIOS_NOTARIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(NOMBRE RECEPTOR:)",
+					"expresionRegularValoresFinales": "(?i)(Uso CFDI)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 50,
+					"entidades": [
+						"FOLIO_FISCAL_RECIBO_HONORARIOS_NOTARIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(FOLIO FISCAL:)",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"DESCRIPCION_RECIBO_HONORARIOS_NOTARIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(DESCRIPCION|DESCRIPCIÓN|DESCRIPCIóN)",
+					"expresionRegularValoresFinales": "(?i)(IVA|IMPUESTO)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"FECHA_FACTURA_RECIBO_HONORARIOS_NOTARIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(RECEPTOR|FECHA Y HORA|FECHA)",
+					"expresionRegularValoresFinales": "(?i)(Nombre receptor|CFDI)",
+					"expresionRegular": "(\\d{1,4})(\\/|-)(\\d{1,2})(\\/|-)(\\d{1,2})",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"PRECIO_UNITARIO_RECIBO_HONORARIOS_NOTARIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(VALOR UNITARIO|NO. DE CUENTA PREDIAL)",
+					"expresionRegularValoresFinales": "(?i)(DESCRIPCION|DESCRIPCIÓN|DESCRIPCIóN)",
+					"expresionRegular": "(\\d+)([.])(\\d{1,2})",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"SUB_TOTAL_RECIBO_HONORARIOS_NOTARIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(SUBTOTAL)",
+					"expresionRegularValoresFinales": "(?i)(TOTAL)",
+					"expresionRegular": "([$](([ ])|\\d))([\\d,.]*)((?i)( MXP)|)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "1",
+					"entidades": [
+						"IMPUESTO_TRASLADO_IVA_RECIBO_HONORARIOS_NOTARIO"
+					],
+					"expresionRegularValoresIniciales": "([$](([ ])|\\d))([\\d,.]*)((?i)( MXP)|)",
+					"expresionRegularValoresFinales": "(?i)(TOTAL)",
+					"expresionRegular": "([$](([ ])|\\d))([\\d,.]*)((?i)( MXP)|)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "2",
+					"entidades": [
+						"TOTAL_RECIBO_HONORARIOS_NOTARIO"
+					],
+					"expresionRegularValoresIniciales": "([$](([ ])|\\d))([\\d,.]*)((?i)( MXP)|)",
+					"expresionRegularValoresFinales": "(?i)(CONDICIONES DE PAGO)",
+					"expresionRegular": "([$](([ ])|\\d))([\\d,.]*)((?i)( MXP)|)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"CADENA_COMPLEMENTO_CERTIFICACION_DIGITAL_SAT_RECIBO_HONORARIOS_NOTARIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(N DIGITAL DEL SAT:)",
+					"expresionRegularValoresFinales": "(?i)(RFC)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"CONDICIONES_PAGO_RECIBO_HONORARIOS_NOTARIO"
+					],
+					"expresionRegularValoresIniciales": "(?i)(CONDICIONES DE PAGO:)",
+					"expresionRegularValoresFinales": "(?i)(SELLO DIGITAL)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				
+				
+				{
+					"posicion": "0",
+					"entidades": [
+						"LUGAR_PAGO_RECIBO_ISABI"
+					],
+					"expresionRegularValoresIniciales": "(?i)(MUNICIPIO DE|DE)",
+					"expresionRegularValoresFinales": "(?i)(TESORERIA|TESORERÍA|TESORERíA)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"CERTIFICADO_RECIBO_ISABI"
+					],
+					"expresionRegularValoresIniciales": "(?i)(CERTIFICADO|INGRESOS)",
+					"expresionRegularValoresFinales": "(?i)(FECHA)",
+					"expresionRegular": "(?i)(BC)( |-)*(\\d*)( |-)*(\\d)*",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 20,
+					"entidades": [
+						"FECHA_PAGO_RECIBO_ISABI"
+					],
+					"expresionRegularValoresIniciales": "(?i)(FECHA|FECHA:)",
+					"expresionRegular": "(\\d{1,2})(\\/|-|:)(\\d{1,2})(\\/|-|:)(\\d{1,4})",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"NOMBRE_TITULAR_RECIBO_ISABI"
+					],
+					"expresionRegularValoresIniciales": "(?i)(NOMBRE:|NOMBRE)",
+					"expresionRegularValoresFinales": "(?i)(ADQUIERE|RFC)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"agregarTextoInicial": " ",
+					"entidades": [
+						"FOLIO_RECIBO_ISABI",
+						"DOMICILIO_RECIBO_ISABI",
+						"DOMICILIO_RECIBO_CLG_AVISO_PREVENTIVO",
+						"DOMICILIO_RECIBO_CLG_SIN_HIPOTECA",
+						"DOMICILIO_RECIBO_DERECHOS_REGISTRO",
+						"DOMICILIO_RECIBO_CANCELACION_HIPOTECA"
+					],
+					"tipoReconocimiento": "enviarVacio"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"TIPO_PAGO_RECIBO_ISABI"
+					],
+					"expresionRegularValoresIniciales": "(?i)(DE PAGO|CONCEPTO DE)",
+					"expresionRegularValoresFinales": "(?i)(RECARGOS|RECARGO|IMPUESTO|TOTAL|DATOS)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 20,
+					"entidades": [
+						"TOTAL_PAGO_RECIBO_ISABI"
+					],
+					"expresionRegularValoresIniciales": "(?i)(TOTAL DE PAGO:|TOTAL DE PAGO)",
+					"expresionRegular": "([$](([ ])|\\d))([\\d,.]*)((?i)( MXP)|)",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				
+				
+				{
+					"posicion": "0",
+					"entidades": [
+						"LUGAR_PAGO_RECIBO_CLG_AVISO_PREVENTIVO",
+						"LUGAR_PAGO_RECIBO_CLG_SIN_HIPOTECA",
+						"LUGAR_PAGO_RECIBO_DERECHOS_REGISTRO",
+						"LUGAR_PAGO_RECIBO_CANCELACION_HIPOTECA"
+					],
+					"expresionRegularValoresIniciales": "(?i)(OPERACION|OPERACIÓN|OPERACIóN|/OFICINA )",
+					"expresionRegularValoresFinales": "(?i)(/)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 100,
+					"entidades": [
+						"CLAVE_OPERACION_RECIBO_CLG_AVISO_PREVENTIVO",
+						"CLAVE_OPERACION_RECIBO_CLG_SIN_HIPOTECA",
+						"FOLIO_RECIBO_DERECHOS_REGISTRO",
+						"CLAVE_OPERACION_RECIBO_CANCELACION_HIPOTECA"
+					],
+					"expresionRegularValoresIniciales": "(?i)(OPERACION|OPERACIÓN|OPERACIóN)",
+					"expresionRegular": "(\\*| |\\+)(\\d+)(\\*|\\+)|(\\*|\\+)(\\d+)(\\*| |\\+)",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 80,
+					"entidades": [
+						"FECHA_PAGO_RECIBO_CLG_AVISO_PREVENTIVO",
+						"FECHA_PAGO_RECIBO_CLG_SIN_HIPOTECA",
+						"FECHA_PAGO_RECIBO_DERECHOS_REGISTRO",
+						"FECHA_PAGO_RECIBO_CANCELACION_HIPOTECA"
+					],
+					"expresionRegularValoresIniciales": "(?i)(FECHA|OPERACION|OPERACIÓN|OPERACIóN)",
+					"expresionRegular": "(\\d{1,2})(\\/|-)(\\d{1,2})(\\/|-)(\\d{1,4})",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"NOMBRE_TITULAR_RECIBO_CLG_AVISO_PREVENTIVO",
+						"NOMBRE_TITULAR_RECIBO_CLG_SIN_HIPOTECA",
+						"NOMBRE_TITULAR_RECIBO_DERECHOS_REGISTRO",
+						"NOMBRE_TITULAR_RECIBO_CANCELACION_HIPOTECA"
+					],
+					"expresionRegularValoresIniciales": "(?i)(CONTRIBUYENTE:)",
+					"expresionRegularValoresFinales": "(?i)(DISTRITO|NOTARIO|:)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"CERTIFICADO_RECIBO_CLG_AVISO_PREVENTIVO",
+						"CERTIFICADO_RECIBO_CLG_SIN_HIPOTECA",
+						"CERTIFICADO_RECIBO_DERECHOS_REGISTRO",
+						"CERTIFICADO_RECIBO_CANCELACION_HIPOTECA"
+					],
+					"expresionRegularValoresIniciales": "(?i)(M.N.\\)|MN\\)|N.\\))",
+					"expresionRegularValoresFinales": "(?i)(NO EXPONER|NO)",
+					"expresionRegular": "(\\d+)(.*)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"entidades": [
+						"TIPO_PAGO_RECIBO_CLG_AVISO_PREVENTIVO",
+						"TIPO_PAGO_RECIBO_CLG_SIN_HIPOTECA",
+						"TIPO_PAGO_RECIBO_DERECHOS_REGISTRO",
+						"TIPO_PAGO_RECIBO_CANCELACION_HIPOTECA"
+					],
+					"expresionRegularValoresIniciales": "(?i)(DESCRIPCION DEL PAGO|DEL PAGO:|DEL PAGO)",
+					"expresionRegularValoresFinales": "(?i)(IMPUESTO|\\.|ESTIMULO)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
+				},
+				{
+					"posicion": "0",
+					"longitud": 20,
+					"entidades": [
+						"TOTAL_PAGO_RECIBO_CLG_AVISO_PREVENTIVO",
+						"TOTAL_PAGO_RECIBO_CLG_SIN_HIPOTECA",
+						"TOTAL_PAGO_RECIBO_DERECHOS_REGISTRO",
+						"TOTAL_PAGO_RECIBO_CANCELACION_HIPOTECA"
+					],
+					"expresionRegularValoresIniciales": "(?i)(TOTAL)",
+					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+				}
+			]
+		}
+	]
+}

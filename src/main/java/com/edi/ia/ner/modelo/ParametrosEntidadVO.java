@@ -19,15 +19,26 @@ public class ParametrosEntidadVO {
 	private String expresionRegularValoresFinales;
 	private String etiqueta;
 	private String codigoServicio;
+	private String agregarTextoInicial;
+	private String agregarTextoFinal;
 	private ArrayList<String> entidades;
 	private ArrayList<String> valoresIniciales;
 	private ArrayList<String> valoresFinales;
 	private ArrayList<String> valoresContenido;
 	private ArrayList<String> valoresOmitir;
 	private ArrayList<String> valoresRemoverAlFinal;
+	private boolean mantenerSaltoLinea;
 	
 	
 	
+	public boolean isMantenerSaltoLinea() {
+		return mantenerSaltoLinea;
+	}
+
+	public void setMantenerSaltoLinea(boolean mantenerSaltoLinea) {
+		this.mantenerSaltoLinea = mantenerSaltoLinea;
+	}
+
 	public int getLongitudGrupoColindancia() {
 		return longitudGrupoColindancia;
 	}
@@ -188,4 +199,22 @@ public class ParametrosEntidadVO {
 	public void setEntidadRelacionadas(String entidadRelacionadas) {
 		this.entidadRelacionadas = entidadRelacionadas;
 	}
+
+	public String getAgregarTextoInicial() {
+		return agregarTextoInicial;
+	}
+
+	public void setAgregarTextoInicial(String agregarTextoInicial) {
+		this.agregarTextoInicial = agregarTextoInicial;
+	}
+
+	public String getAgregarTextoFinal() {
+		return agregarTextoFinal;
+	}
+
+	public void setAgregarTextoFinal(String agregarTextoFinal) {
+		this.agregarTextoFinal = agregarTextoFinal;
+	}
+	
+	
 }

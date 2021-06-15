@@ -11,4 +11,5 @@ RUN mkdir /opt/appi-match/config
 COPY --from=build /home/app/target/Matcher-0.0.1-SNAPSHOT.jar /opt/appi-match/Matcher.jar
 COPY parametros_entidad.json /opt/appi-match/config
 
+
 ENTRYPOINT ["java", "-jar", "/opt/appi-match/Matcher.jar"]

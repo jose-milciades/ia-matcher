@@ -623,6 +623,24 @@
 					"entidades": ["EMPTY"]
 				},
 				{
+					"tipoReconocimiento": "reconocerParrafo",
+					"codigoServicio": "servicio_matcher",
+					"espacioEntrePalabras": "100",
+					"longitud": "0",
+					"valoresContenido": [
+					],
+					"entidades": ["ANY_MATCHER"]
+				},
+				{
+					"tipoReconocimiento": "reconocerParrafo",
+					"codigoServicio": "servicio_npl",
+					"espacioEntrePalabras": "100",
+					"longitud": "0",
+					"valoresContenido": [
+					],
+					"entidades": ["ANY_NPL"]
+				},
+				{
 					"entidades": ["SUPERFICIE_COLINDACIAS"],
 					"codigoServicio": "servicio_matcher",
 					"asiertos": "12",
