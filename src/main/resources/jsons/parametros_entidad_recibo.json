@@ -32,10 +32,9 @@
 						"NOMBRE_TITULAR_RECIBO_AGUA",
 						"NOMBRE_TITULAR_RECIBO_ACTUALIZACION_AGUA"
 					],
-					"mantenerSaltoLinea":false,
 					"posicion": "0",
-					"expresionRegularValoresIniciales": "(?i)(NOMBRE:|NOMBRE :|NOMBRE|CLIENTE:|CLIENTE :|CLIENTE)",
-					"expresionRegularValoresFinales": "(?i)(REFERENCIA|RFC|R.F.C.|R.F.C)",
+					"expresionRegularValoresIniciales": "(?i)(NOMBRE:|NOMBRE :|NOMBRE|CLIENTE:|CLIENTE :|CLIENTE|(CLIENTE\\.))",
+					"expresionRegularValoresFinales": "(?i)(REFERENCIA|RFC|R.F.C.|R.F.C|RFC|(R\\.))|REG|(\\:)",
 					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
 				},
 				{
@@ -65,7 +64,7 @@
 						"TIPO_PAGO_RECIBO_ACTUALIZACION_AGUA"
 					],
 					"expresionRegularValoresIniciales": "(\\d{1,2})(\\/|-)(\\d{1,2})(\\/|-)(\\d{1,4})|(?i)(JUNTA)",
-					"expresionRegularValoresFinales": "(?i)(\\(ORIGINAL\\)|ORIGINAL|R.F.C|R.E.C|RFC|REC)",
+					"expresionRegularValoresFinales": "(?i)(\\(ORIGINAL\\)|ORIGINAL|R\\.F\\.C|R\\.E\\.C|RFC|REC|(R\\.)|TEL|(C\\.)|(\\.C))",
 					"expresionRegular": "(?i)(JUNTA).*",
 					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
 				},
