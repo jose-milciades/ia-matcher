@@ -127,9 +127,10 @@ public class Controlador implements ControladorServicio {
 			}
 			// Obtener datos del acreditado del anexo B
 			if (escrituraConAnexoB) {
-				String nombreAcreditadoAnexoB = this.buscarValorEntidad(modelosNerVO, "ner-escritura",
+				modelosNerVO = utilidad.obtenerModelosNer(VariablesGlobales.MODELO_NER_ESCRITURA);
+				String nombreAcreditadoAnexoB = this.buscarValorEntidad(modelosNerVO, VariablesGlobales.MODELO_NER_ESCRITURA,
 						"ACREDITADO_ANEXO_B", creditoVO.getTextoAcreditadoAnexoB());
-				String nombreConyugeAnexoB = this.buscarValorEntidad(modelosNerVO, "ner-escritura",
+				String nombreConyugeAnexoB = this.buscarValorEntidad(modelosNerVO, VariablesGlobales.MODELO_NER_ESCRITURA,
 						"ACREDITADO_ANEXO_B", creditoVO.getTextoConyugeAnexoB());
 
 				int indiceNombreAcreditado = cotejar.buscarNombre(creditoVO.getTextoPropiedad(),
