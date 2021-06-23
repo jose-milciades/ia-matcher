@@ -516,7 +516,7 @@
 						"LUGAR_PAGO_RECIBO_CANCELACION_HIPOTECA"
 					],
 					"expresionRegularValoresIniciales": "(?i)(CAJA|HORA|\\/OFICINA )",
-					"expresionRegularValoresFinales": "(?i)(\\/)",
+					"expresionRegularValoresFinales": "(?i)(\\/\\d)",
 					"expresionRegular": "((?<=OPERACION ).*)|(\\b(\\w+)$)",
 					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
 				},
@@ -576,14 +576,15 @@
 				},
 				{
 					"posicion": "0",
+					"textoEliminar": "CANT.",
 					"entidades": [
 						"TIPO_PAGO_RECIBO_CLG_AVISO_PREVENTIVO",
 						"TIPO_PAGO_RECIBO_CLG_SIN_HIPOTECA",
 						"TIPO_PAGO_RECIBO_DERECHOS_REGISTRO",
 						"TIPO_PAGO_RECIBO_CANCELACION_HIPOTECA"
 					],
-					"expresionRegularValoresIniciales": "(?i)(DESCRIPCION DEL PAGO|DEL PAGO:|DEL PAGO|NUM 22|CANT\\.)",
-					"expresionRegularValoresFinales": "(?i)(IMPUESTO|ESTIMULO|CANT\\.|1|((\\d)\\.))",
+					"expresionRegularValoresIniciales": "(?i)(DESCRIPCION DEL PAGO|DEL PAGO:|DEL PAGO|NUM |CANT\\.)",
+					"expresionRegularValoresFinales": "(?i)(IMPUESTO|ESTIMULO| 1 |((\\d)\\.))",
 					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
 				},
 				{

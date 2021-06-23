@@ -23,6 +23,7 @@ public class ParametrosEntidadVO {
 	private String codigoServicio;
 	private String agregarTextoInicial;
 	private String agregarTextoFinal;
+	private String textoEliminar;
 	private ArrayList<String> entidades;
 	private ArrayList<String> valoresIniciales;
 	private ArrayList<String> valoresFinales;
@@ -234,5 +235,11 @@ public class ParametrosEntidadVO {
 		this.agregarTextoFinal = agregarTextoFinal;
 	}
 	
-	
+	public String getTextoEliminar() {
+		return textoEliminar;
+	}
+
+	public void setTextoEliminar(String textoEliminar) {
+		this.textoEliminar = textoEliminar;
+	}
 }

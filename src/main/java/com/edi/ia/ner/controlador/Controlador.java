@@ -408,6 +408,8 @@ public class Controlador implements ControladorServicio {
 
 		if (valorEntidad != null) {
 			valorEntidad = valorEntidad.trim();
+			if (parametrosEntidadVO.getTextoEliminar() != null)
+				valorEntidad = valorEntidad.replace(parametrosEntidadVO.getTextoEliminar(), "");
 			if (parametrosEntidadVO.getAgregarTextoInicial() != null)
 				valorEntidad = parametrosEntidadVO.getAgregarTextoInicial() + valorEntidad;
 			if (parametrosEntidadVO.getAgregarTextoFinal() != null)
