@@ -8,6 +8,7 @@ public class ParametrosEntidadVO {
 	private String entidadRelacionadas;
 	private String tipoReconocimiento;
 	private int posicion;
+	private int posicionMatch;
 	private int espacioEntrePalabras;
 	private int longitud;
 	private int longitudGrupoColindancia;
@@ -16,6 +17,7 @@ public class ParametrosEntidadVO {
 	private String expresionRegular;
 	private String expresionRegularAux;
 	private String expresionRegularValoresIniciales;
+	private String expresionRegularAdicionalValoresIniciales;
 	private String expresionRegularValoresFinales;
 	private String etiqueta;
 	private String codigoServicio;
@@ -73,6 +75,14 @@ public class ParametrosEntidadVO {
 
 	public String getExpresionRegularValoresIniciales() {
 		return expresionRegularValoresIniciales;
+	}
+
+	public void setExpresionRegularAdicionalValoresIniciales(String expresionRegularAdicionalValoresIniciales) {
+		this.expresionRegularAdicionalValoresIniciales = expresionRegularAdicionalValoresIniciales;
+	}
+	
+	public String getExpresionRegularAdicionalValoresIniciales() {
+		return expresionRegularAdicionalValoresIniciales;
 	}
 
 	public void setExpresionRegularValoresIniciales(String expresionRegularValoresIniciales) {
@@ -142,6 +152,14 @@ public class ParametrosEntidadVO {
 
 	public void setPosicion(int posicion) {
 		this.posicion = posicion;
+	}
+	
+	public int getPosicionMatch() {
+		return posicionMatch;
+	}
+
+	public void setPosicionMatch(int posicionMatch) {
+		this.posicionMatch = posicionMatch;
 	}
 
 	public ArrayList<String> getEntidades() {

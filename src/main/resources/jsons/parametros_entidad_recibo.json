@@ -515,8 +515,9 @@
 						"LUGAR_PAGO_RECIBO_DERECHOS_REGISTRO",
 						"LUGAR_PAGO_RECIBO_CANCELACION_HIPOTECA"
 					],
-					"expresionRegularValoresIniciales": "(?i)(OPERACION|OPERACIÓN|OPERACIóN|/OFICINA )",
-					"expresionRegularValoresFinales": "(?i)(/)",
+					"expresionRegularValoresIniciales": "(?i)(CAJA|HORA|\\/OFICINA )",
+					"expresionRegularValoresFinales": "(?i)(\\/)",
+					"expresionRegular": "((?<=OPERACION ).*)|(\\b(\\w+)$)",
 					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
 				},
 				{
@@ -553,8 +554,10 @@
 						"NOMBRE_TITULAR_RECIBO_DERECHOS_REGISTRO",
 						"NOMBRE_TITULAR_RECIBO_CANCELACION_HIPOTECA"
 					],
-					"expresionRegularValoresIniciales": "(?i)(CONTRIBUYENTE:)",
+					"expresionRegularValoresIniciales": "(?i)(CONTRIBUYENTE:|TRIBUYENTE:)",
+					"expresionRegularAdicionalValoresIniciales": "(?i)(TRIBUYENTE)",
 					"expresionRegularValoresFinales": "(?i)(DISTRITO|NOTARIO|:)",
+					"expresionRegular": "^((.*?)(\\d)|([\\s\\S]+))",
 					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
 				},
 				{
@@ -566,7 +569,8 @@
 						"CERTIFICADO_RECIBO_CANCELACION_HIPOTECA"
 					],
 					"expresionRegularValoresIniciales": "(?i)(M.N.\\)|MN\\)|N.\\))",
-					"expresionRegularValoresFinales": "(?i)(NO EXPONER|NO)",
+					"expresionRegularAdicionalValoresIniciales": "(?i)(\\(SON)",
+					"expresionRegularValoresFinales": "(?i)(NO EXPONER|EXPONER|RECIBO)",
 					"expresionRegular": "(\\d+)(.*)",
 					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
 				},
@@ -578,21 +582,23 @@
 						"TIPO_PAGO_RECIBO_DERECHOS_REGISTRO",
 						"TIPO_PAGO_RECIBO_CANCELACION_HIPOTECA"
 					],
-					"expresionRegularValoresIniciales": "(?i)(DESCRIPCION DEL PAGO|DEL PAGO:|DEL PAGO)",
-					"expresionRegularValoresFinales": "(?i)(IMPUESTO|\\.|ESTIMULO)",
+					"expresionRegularValoresIniciales": "(?i)(DESCRIPCION DEL PAGO|DEL PAGO:|DEL PAGO|NUM 22|CANT\\.)",
+					"expresionRegularValoresFinales": "(?i)(IMPUESTO|ESTIMULO|CANT\\.|1|((\\d)\\.))",
 					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
 				},
 				{
 					"posicion": "0",
-					"longitud": 20,
+					"posicionMatch": "10",
 					"entidades": [
 						"TOTAL_PAGO_RECIBO_CLG_AVISO_PREVENTIVO",
 						"TOTAL_PAGO_RECIBO_CLG_SIN_HIPOTECA",
 						"TOTAL_PAGO_RECIBO_DERECHOS_REGISTRO",
 						"TOTAL_PAGO_RECIBO_CANCELACION_HIPOTECA"
 					],
-					"expresionRegularValoresIniciales": "(?i)(TOTAL)",
-					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
+					"expresionRegularValoresIniciales": "(?i)(DESCRIPCION|NUM|IMPUESTO|TOTAL)",
+					"expresionRegular": "((\\d))([\\d,.]*)",
+					"expresionRegularValoresFinales": "(?i)(\\(SON|SON|PESOS)",
+					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
 				}
 			]
 		}

@@ -52,6 +52,19 @@ public class Cotejar {
 			
 			
 		}
+		
+		if (inicio == -1 && parametrosEntidadVO.getExpresionRegularAdicionalValoresIniciales() != null) {
+			regex = Pattern.compile(parametrosEntidadVO.getExpresionRegularAdicionalValoresIniciales(), Pattern.CASE_INSENSITIVE);
+			match = regex.matcher(texto);
+			contadorPosicion = 0;
+			while (match.find()) {
+				contadorPosicion++;
+				inicio = match.end();
+				if(contadorPosicion>=parametrosEntidadVO.getPosicion()) {
+					break;
+				}
+			}
+		}
 
 		if (inicio != -1) {
 			regex = Pattern.compile(parametrosEntidadVO.getExpresionRegularValoresFinales(), Pattern.CASE_INSENSITIVE);
@@ -69,8 +82,13 @@ public class Cotejar {
 			if (parametrosEntidadVO.getExpresionRegular() != null && valorEntidad != null) {
 				regex = Pattern.compile(parametrosEntidadVO.getExpresionRegular(), Pattern.CASE_INSENSITIVE);
 				match = regex.matcher(valorEntidad);
-				if (match.find()) {
+				contadorPosicion = 0;
+				while (match.find()) {
+					contadorPosicion++;
 					valorEntidad = match.group(0).trim();
+					if(contadorPosicion>=parametrosEntidadVO.getPosicionMatch()) {
+						break;
+					}
 				}
 			}
 		}
