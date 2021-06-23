@@ -295,7 +295,7 @@
 					"entidades": [
 						"CADENA_COMPLEMENTO_CERTIFICACION_DIGITAL_SAT_RECIBO_HONORARIOS_AVALUO"
 					],
-					"expresionRegularValoresIniciales": "(?i)(CERTIFICACIÓN DIGITAL DEL SAT:)",
+					"expresionRegularValoresIniciales": "(?i)(DIGITAL DEL SAT:)",
 					"tipoReconocimiento": "reconocerEntidadSiguienteExpresionRegular"
 				},
 				{
