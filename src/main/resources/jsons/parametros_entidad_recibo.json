@@ -442,7 +442,7 @@
 						"LUGAR_PAGO_RECIBO_ISABI"
 					],
 					"expresionRegularValoresIniciales": "(?i)(MUNICIPIO DE|DE)",
-					"expresionRegularValoresFinales": "(?i)(TESORERIA|TESORERÍA|TESORERíA)",
+					"expresionRegularValoresFinales": "(?i)(TESORERIA|TESORERÍA|TESORERíA|MUNICI|UNICIPAL)",
 					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
 				},
 				{
@@ -451,7 +451,7 @@
 						"CERTIFICADO_RECIBO_ISABI"
 					],
 					"expresionRegularValoresIniciales": "(?i)(CERTIFICADO|INGRESOS)",
-					"expresionRegularValoresFinales": "(?i)(FECHA)",
+					"expresionRegularValoresFinales": "(?i)(TIPO|DATOS)",
 					"expresionRegular": "(?i)(BC)( |-)*(\\d*)( |-)*(\\d)*",
 					"tipoReconocimiento": "reconocerEntidadEntreTextoExpresionRegular"
 				},
@@ -488,6 +488,7 @@
 				},
 				{
 					"posicion": "0",
+					"textoEliminar": "-",
 					"entidades": [
 						"TIPO_PAGO_RECIBO_ISABI"
 					],
